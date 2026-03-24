@@ -24,7 +24,7 @@ jobs:
           restore-keys: Library-
 
       - name: Activate Unity licence
-        uses: buildalon/activate-unity-license@v1
+        uses: buildalon/activate-unity-license@v2
         with:
           license: 'Personal'
           username: ${{ secrets.UNITY_EMAIL }}
