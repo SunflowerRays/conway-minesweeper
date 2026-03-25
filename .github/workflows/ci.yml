@@ -54,4 +54,10 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
     
-          
+      # https://sbomgenerator.com/guides/ci-cd
+      - name: Generate dependency SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          format: spdx-json
+          output-file: sbom.spdx.json
+          artifact-name: sbom.spdx.json
