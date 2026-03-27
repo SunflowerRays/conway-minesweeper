@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu (menuName = "GoL/Pattern")]
+[CreateAssetMenu(menuName = "GoL/Pattern")]
 public class Pattern : ScriptableObject
 {
 
@@ -16,9 +16,9 @@ public class Pattern : ScriptableObject
         Vector2Int min = Vector2Int.zero;
         Vector2Int max = Vector2Int.zero;
 
-        for (int i = 0; i < cells.Length; i++) 
-        { 
-        
+        for (int i = 0; i < cells.Length; i++)
+        {
+
             Vector2Int cell = cells[i];
             min.x = Mathf.Min(cell.x, min.x);
             max.x = Mathf.Max(cell.x, min.x);
