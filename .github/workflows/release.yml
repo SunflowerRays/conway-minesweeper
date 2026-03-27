@@ -6,44 +6,20 @@ on:
       - 'v*'
 
 jobs:
-  build:
-    name: Build (${{ matrix.targetPlatform }})
+  release:
+    name: Create Release
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform:
-          - StandaloneWindows64
-          - StandaloneOSX
-          - StandaloneLinux64
+    permissions:
+      contents: write
     steps:
-        - name: Checkout repository
-          uses: actions/checkout@v4
-          with:
-            lfs: true
-  
-        - name: Cache Unity Library
-          uses: actions/cache@v3
-          with:
-            path: Library
-            key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-            restore-keys: |
-              Library-${{ matrix.targetPlatform }}-
-              Library-
-  
-        # src: https://game.ci/docs/github/builder
-        - name: Build project
-          uses: game-ci/unity-builder@v4
-          env:
-            UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-            UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-            UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-          with:
-            targetPlatform: ${{ matrix.targetPlatform }}
-  
-        - name: Upload build artifact
-          uses: actions/upload-artifact@v4
-          with:
-            name: build-${{ matrix.targetPlatform }}
-            path: build/${{ matrix.targetPlatform }}
-            
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # src: https://github.com/softprops/action-gh-release
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          prerelease: false
+          files: |
+            builds/*.zip
