@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   test:
@@ -17,7 +17,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: "8.0.x"
 
       - name: Cache Unity Library
         uses: actions/cache@v3
@@ -25,7 +25,6 @@ jobs:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: Library-
-
 
   security:
     name: Security Scan
@@ -36,24 +35,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
-      
+
       # src: https://github.com/aquasecurity/trivy-action
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: 'fs'
+          scan-type: "fs"
           ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL'
+          format: "sarif"
+          output: "trivy-results.sarif"
+          severity: "CRITICAL"
 
       - name: Upload Trivy scan results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
-          sarif_file: 'trivy-results.sarif'
-    
+          sarif_file: "trivy-results.sarif"
+
       # https://sbomgenerator.com/guides/ci-cd
       - name: Generate dependency SBOM
         uses: anchore/sbom-action@v0
