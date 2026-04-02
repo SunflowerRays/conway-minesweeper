@@ -45,3 +45,4 @@ jobs:
           VALIDATE_JSON_PRETTIER: false
           VALIDATE_MARKDOWN_PRETTIER: false
           VALIDATE_SPELL_CODESPELL: false
+          FILTER_REGEX_EXCLUDE: .github/dependabot.yaml
