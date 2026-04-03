@@ -45,4 +45,5 @@ jobs:
           VALIDATE_JSON_PRETTIER: false
           VALIDATE_MARKDOWN_PRETTIER: false
           VALIDATE_SPELL_CODESPELL: false
+          ZIZMOR_EXTRA_ARGS: --suppress superfluous-actions
           FILTER_REGEX_EXCLUDE: .github/dependabot.yaml
