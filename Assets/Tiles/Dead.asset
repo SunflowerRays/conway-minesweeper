@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Dead
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
   m_Sprite: {fileID: 7482667652216324306, guid: 30a38ee10b80d7a4d9befd1337361405, type: 3}
-  m_Color: {r: 0.3584906, g: 0.033951104, b: 0, a: 1}
+  m_Color: {r: 0.11764706, g: 0.64775646, b: 0.7830189, a: 1}
   m_Transform:
     e00: 1
     e01: 0
@@ -33,4 +33,4 @@ MonoBehaviour:
     e33: 1
   m_InstancedGameObject: {fileID: 0}
   m_Flags: 1
-  m_ColliderType: 0
+  m_ColliderType: 1
