@@ -21,9 +21,9 @@ public class Pattern : ScriptableObject
 
             Vector2Int cell = cells[i];
             min.x = Mathf.Min(cell.x, min.x);
-            max.x = Mathf.Max(cell.x, min.x);
+            max.x = Mathf.Max(cell.x, max.x);
             min.y = Mathf.Min(cell.y, min.y);
-            max.y = Mathf.Max(cell.y, min.y);
+            max.y = Mathf.Max(cell.y, max.y);
         }
 
         return (min + max) / 2;
