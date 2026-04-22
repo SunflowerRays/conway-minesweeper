@@ -12,15 +12,17 @@ public class HashSet2TileMap : MonoBehaviour
 
     private HashSet<(int x, int y)> hashSet { get; set; }
     private Tilemap tileMap;
-    [SerializeField] private Tile one;
-    [SerializeField] private Tile emptytile;
+
     [SerializeField] private Tile bomb;
-    [SerializeField] private Tile [] nonMineTiles;
-    
+    [SerializeField] private Tile explosion;
+    [SerializeField] private Tile[] nonMineTiles;
+    [SerializeField] private Tile greyTile;
+
 
 
     [SerializeField] private GoL gol;
     [SerializeField] private Tilemap minefield;
+    [SerializeField] private Tilemap greyfield;
     /// <summary>
     /// Read HashSet write to tilemap.
     /// </summary>
@@ -31,12 +33,16 @@ public class HashSet2TileMap : MonoBehaviour
 
         clear(tileMap);
 
-        //assumption. hashSet and tileMap have the smae dimensions.
+        //assumption. hashSet and tileMap have the same dimensions.
+        //conditional statement to detect call from the MineHider file.
+        /*
+        if(tileMap == greyfield) { 
+        */
         foreach (var cell in hashSet)
         {
-            tileMap.SetTile(new Vector3Int(cell.x, cell.y, 0), one);
+            tileMap.SetTile(new Vector3Int(cell.x, cell.y, 0), greyTile);
         }
-
+        
     }
 
     public void mapper(List<MineDetector.CellData> cellsData, Tilemap tileMap)
@@ -52,13 +58,12 @@ public class HashSet2TileMap : MonoBehaviour
             else if (CellData.mines > 0)
             {
                 tileMap.SetTile(new Vector3Int(CellData.x, CellData.y, 0), nonMineTiles[CellData.mines]);
-            } 
+            }
             else
             {
                 tileMap.SetTile(new Vector3Int(CellData.x, CellData.y, 0), nonMineTiles[0]);
             }
 
-            
         }
 
     }
@@ -81,11 +86,12 @@ public class HashSet2TileMap : MonoBehaviour
     void Start()
     {
         gol.mineDetector.onDetectionComplete += () => mapper(gol.mineDetector.cellsData, minefield);
+        gol.mineHider.onDetectionComplete += () => mapper(gol.mineHider.topCells, greyfield);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

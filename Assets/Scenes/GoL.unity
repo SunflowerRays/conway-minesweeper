@@ -199,7 +199,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -275,9 +275,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e5a9fa40c822314ebcce37f0a8372b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HashSet2TileMap
-  one: {fileID: 11400000, guid: 314f151d1de61ae4e886211acae5f2ce, type: 2}
-  emptytile: {fileID: 11400000, guid: 9990afdc10672d046aeebc5256947cc8, type: 2}
   bomb: {fileID: 11400000, guid: 3e7590bb5530fc54db263650926e9b55, type: 2}
+  explosion: {fileID: 11400000, guid: d1e7d1b2e66b9f6459d482ab947adca3, type: 2}
   nonMineTiles:
   - {fileID: 11400000, guid: 9990afdc10672d046aeebc5256947cc8, type: 2}
   - {fileID: 11400000, guid: 314f151d1de61ae4e886211acae5f2ce, type: 2}
@@ -288,8 +287,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7a91bf69a8861aa4da80c2de48377029, type: 2}
   - {fileID: 11400000, guid: 3229bdda2c764584dbe38e6686eaba63, type: 2}
   - {fileID: 11400000, guid: c3c2192027408374abe743fe988b28f4, type: 2}
+  greyTile: {fileID: 11400000, guid: 3c44fcbdd4d399a428268b6497da9776, type: 2}
   gol: {fileID: 1520914525}
   minefield: {fileID: 2136659679}
+  greyfield: {fileID: 190375889}
 --- !u!4 &257198104
 Transform:
   m_ObjectHideFlags: 0
@@ -1175,7 +1176,7 @@ Tilemap:
   m_TileColorArray: []
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9843138, g: 0.9843138, b: 0.98823535, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
   m_Size: {x: 0, y: 0, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}

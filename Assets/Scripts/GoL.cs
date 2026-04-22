@@ -20,6 +20,7 @@ public class GoL : MonoBehaviour
     public LiveRegistry liveRegistry;
     public Generator generator;
     public MineDetector mineDetector;
+    public MineHider mineHider;
 
     public int iterations { get; internal set; }
     public float time { get; internal set; }
@@ -29,11 +30,8 @@ public class GoL : MonoBehaviour
         liveRegistry = new LiveRegistry();
         grid = new Grid(centre, gridWidth, gridHeight);
         mineDetector = new MineDetector(grid, liveRegistry);
-        //TODO: Add a toggleable setting for whether MineDetector.detector will trigger on each generaton,
-        //If not exclude the MineDetector file from the Generator constructor as shown here.
-        //generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre);
+        mineHider = new MineHider(grid);
         generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre, mineDetector);
-        
     }
 
     public void Start()
@@ -60,13 +58,14 @@ public class GoL : MonoBehaviour
         //liveRegistry.population = liveRegistry.aliveCells.Count;
         liveRegistry.population = liveRegistry.newAliveCells.Count;
         centre = localCentre;
+        mineHider.coverMines(grid);
     }
 
     private void Clear()
     {
         currentState.ClearAllTiles();
         nextState.ClearAllTiles();
-        
+
         //TODO Refactor
         liveRegistry.aliveCells.Clear();
         liveRegistry.newAliveCells.Clear();

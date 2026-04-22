@@ -49,14 +49,15 @@ public class MineDetector
 
                         for (int y = -1; y <= 1; y++)
                         {
-                            if (x == 0 && y == 0) {
+                            if (x == 0 && y == 0)
+                            {
 
                                 continue;
-                            } 
-                            
+                            }
+
                             if (liveRegistry.newAliveCells.Contains((i + x, j + y)))
                             {
-                                 mines++;
+                                mines++;
                             }
 
 
