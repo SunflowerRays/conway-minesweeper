@@ -19,6 +19,7 @@ public class GoL : MonoBehaviour
     public Grid grid;
     public LiveRegistry liveRegistry;
     public Generator generator;
+    public MineDetector mineDetector;
 
     public int iterations { get; internal set; }
     public float time { get; internal set; }
@@ -27,7 +28,12 @@ public class GoL : MonoBehaviour
     {
         liveRegistry = new LiveRegistry();
         grid = new Grid(centre, gridWidth, gridHeight);
-        generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre);
+        mineDetector = new MineDetector(grid, liveRegistry);
+        //TODO: Add a toggleable setting for whether MineDetector.detector will trigger on each generaton,
+        //If not exclude the MineDetector file from the Generator constructor as shown here.
+        //generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre);
+        generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre, mineDetector);
+        
     }
 
     public void Start()
@@ -46,10 +52,13 @@ public class GoL : MonoBehaviour
             localCentre = pattern.GetCentre();
             Vector3Int cell = (Vector3Int)(pattern.cells[i] - localCentre);
             currentState.SetTile(cell, aliveTile);
+            //TODO: Refactor
             liveRegistry.aliveCells.Add(cell);
+            liveRegistry.newAliveCells.Add((cell.x, cell.y));
         }
 
-        liveRegistry.population = liveRegistry.aliveCells.Count;
+        //liveRegistry.population = liveRegistry.aliveCells.Count;
+        liveRegistry.population = liveRegistry.newAliveCells.Count;
         centre = localCentre;
     }
 
@@ -57,7 +66,11 @@ public class GoL : MonoBehaviour
     {
         currentState.ClearAllTiles();
         nextState.ClearAllTiles();
+        
+        //TODO Refactor
         liveRegistry.aliveCells.Clear();
+        liveRegistry.newAliveCells.Clear();
+
         liveRegistry.population = 0;
         iterations = 0;
         time = 0f;

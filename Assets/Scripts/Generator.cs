@@ -17,8 +17,12 @@ public class Generator
     private Vector2Int centre;
     private bool isRunning = true;
     private GoL gol;
-    public Generator(GoL gol, LiveRegistry liveRegistry, Tilemap currentState, Tilemap nextState, Tile aliveTile, Tile deadTile, Vector2Int centre)
+    private MineDetector mineDetector;
+    private HashSet2TileMap hashSet2TileMap;
+
+    public Generator(GoL gol, LiveRegistry liveRegistry, Tilemap currentState, Tilemap nextState, Tile aliveTile, Tile deadTile, Vector2Int centre, MineDetector mineDetector = null, HashSet2TileMap hashSet2TileMap = null)
     {
+        //required
         this.gol = gol;
         this.liveRegistry = liveRegistry;
         this.currentState = currentState;
@@ -26,6 +30,11 @@ public class Generator
         this.aliveTile = aliveTile;
         this.deadTile = deadTile;
         this.centre = centre;
+
+        //optional
+        this.mineDetector = mineDetector;
+        this.hashSet2TileMap = hashSet2TileMap;
+
         cellsToCheck = new HashSet<Vector3Int>();
 
     }
@@ -38,6 +47,7 @@ public class Generator
 
 
     // TODO: Decrease Cognitive Complexity of this Method. The paper from the university in Bangladesh should help with this.
+    // TODO: Refactor to use plain C#.
     public void UpdateState()
     {
         cellsToCheck.Clear();
@@ -65,16 +75,19 @@ public class Generator
             {
                 nextState.SetTile(cell, aliveTile);
                 liveRegistry.aliveCells.Add(cell);
+                liveRegistry.newAliveCells.Add((cell.x, cell.y));
             }
             else if (alive && (neighbours < 2 || neighbours > 3))
             {
                 nextState.SetTile(cell, deadTile);
                 liveRegistry.aliveCells.Remove(cell);
+                liveRegistry.newAliveCells.Remove((cell.x, cell.y));
             }
             else if (cell.x < centre.x - gol.grid.gridWidth / 2 || cell.x > centre.x + gol.grid.gridWidth / 2 || cell.y < centre.y - gol.grid.gridHeight / 2 || cell.y > centre.y + gol.grid.gridHeight / 2)
             {
                 nextState.SetTile(cell, deadTile);
                 liveRegistry.aliveCells.Remove(cell);
+                liveRegistry.newAliveCells.Remove((cell.x, cell.y));
             }
             else
             {
@@ -91,6 +104,12 @@ public class Generator
         nextState = temp;
 
         nextState.ClearAllTiles();
+
+        if (mineDetector != null)
+        {
+            mineDetector.detector();
+        }
+
     }
 
     private bool IsInsideBounds(Vector3Int cell)
@@ -127,6 +146,8 @@ public class Generator
         }
 
         return count;
+
+        
     }
 
     public IEnumerator Simulate()
@@ -143,9 +164,10 @@ public class Generator
         while (isRunning)
         {
             UpdateState();
-            liveRegistry.population = liveRegistry.aliveCells.Count;
+            liveRegistry.population = liveRegistry.newAliveCells.Count;
             gol.iterations++;
             gol.time += gol.freqInterval;
+
             yield return new WaitForSeconds(gol.freqInterval);
         }
 

@@ -4,6 +4,8 @@ using UnityEngine;
 public class Pattern : ScriptableObject
 {
 
+    //TODO: Refactor
+
     public Vector2Int[] cells;
 
     public Vector2Int GetCentre()
