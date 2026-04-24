@@ -9,17 +9,12 @@ using UnityEngine.Tilemaps;
 
 public class HashSet2TileMap : MonoBehaviour
 {
-
     private HashSet<(int x, int y)> hashSet { get; set; }
     private Tilemap tileMap;
-
     [SerializeField] private Tile bomb;
     [SerializeField] private Tile explosion;
     [SerializeField] private Tile[] nonMineTiles;
     [SerializeField] private Tile greyTile;
-
-
-
     [SerializeField] private GoL gol;
     [SerializeField] private Tilemap minefield;
     [SerializeField] private Tilemap greyfield;
@@ -30,7 +25,6 @@ public class HashSet2TileMap : MonoBehaviour
     /// <param name="tilemap"></param>
     public void mapper(HashSet<(int x, int y)> hashSet, Tilemap tileMap)
     {
-
         clear(tileMap);
 
         //assumption. hashSet and tileMap have the same dimensions.
@@ -42,7 +36,7 @@ public class HashSet2TileMap : MonoBehaviour
         {
             tileMap.SetTile(new Vector3Int(cell.x, cell.y, 0), greyTile);
         }
-        
+
     }
 
     public void mapper(List<MineDetector.CellData> cellsData, Tilemap tileMap)
