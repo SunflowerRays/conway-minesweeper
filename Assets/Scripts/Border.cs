@@ -12,7 +12,7 @@ public class Border : MonoBehaviour
 
     private int gH;
     private int gW;
-    private Vector2Int centre;
+    private (int x, int y) centre;
 
 
     private void Awake()
