@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Grid
@@ -26,5 +27,17 @@ public class Grid
 
 
     }
+
+    public IEnumerable<(int x, int y)> GetAllCells()
+    {
+        for (int i = (centre.x - (gridWidth / 2)); i <= (centre.x + (gridWidth / 2)); ++i)
+        {
+            for (int j = (centre.y - (gridHeight / 2)); j <= (centre.y + (gridHeight / 2)); ++j)
+            {
+                yield return (i, j);
+            }
+        }
+    }
+
 
 }

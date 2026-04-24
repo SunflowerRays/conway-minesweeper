@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
 public class GoL : MonoBehaviour
@@ -19,6 +20,8 @@ public class GoL : MonoBehaviour
     public Grid grid;
     public LiveRegistry liveRegistry;
     public Generator generator;
+    public MineDetector mineDetector;
+    public MineHider mineHider;
 
     public int iterations { get; internal set; }
     public float time { get; internal set; }
@@ -27,12 +30,18 @@ public class GoL : MonoBehaviour
     {
         liveRegistry = new LiveRegistry();
         grid = new Grid(centre, gridWidth, gridHeight);
-        generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre);
+        mineDetector = new MineDetector(grid, liveRegistry);
+        mineHider = new MineHider(grid);
+        generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre, mineDetector);
     }
 
     public void Start()
     {
         SetPattern(pattern);
+        if (generator != null)
+        {
+            StartCoroutine(generator.Simulate());
+        }
     }
 
     private void SetPattern(Pattern pattern)
@@ -46,26 +55,49 @@ public class GoL : MonoBehaviour
             localCentre = pattern.GetCentre();
             Vector3Int cell = (Vector3Int)(pattern.cells[i] - localCentre);
             currentState.SetTile(cell, aliveTile);
+            //TODO: Refactor
             liveRegistry.aliveCells.Add(cell);
+            liveRegistry.newAliveCells.Add((cell.x, cell.y));
         }
 
-        liveRegistry.population = liveRegistry.aliveCells.Count;
+        //liveRegistry.population = liveRegistry.aliveCells.Count;
+        liveRegistry.population = liveRegistry.newAliveCells.Count;
         centre = localCentre;
+        mineHider.coverMines(grid);
     }
 
     private void Clear()
     {
         currentState.ClearAllTiles();
         nextState.ClearAllTiles();
+
+        //TODO Refactor
         liveRegistry.aliveCells.Clear();
+        liveRegistry.newAliveCells.Clear();
+
         liveRegistry.population = 0;
         iterations = 0;
         time = 0f;
     }
 
+    void Update()
+    {
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            generator.Stop();
+        }
+    }
+
+
     private void OnEnable()
     {
-        StartCoroutine(generator.Simulate());
+
+        /* reactivate if restarting the generator becomes necessary later.
+        if (generator != null)
+        {
+            StartCoroutine(generator.Simulate());
+        }
+        */
     }
 
     private void OnDisable()

@@ -199,7 +199,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 20
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -246,6 +246,66 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &257198102
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 257198104}
+  - component: {fileID: 257198103}
+  m_Layer: 0
+  m_Name: HashSet2TileMap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &257198103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257198102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e5a9fa40c822314ebcce37f0a8372b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HashSet2TileMap
+  bomb: {fileID: 11400000, guid: 3e7590bb5530fc54db263650926e9b55, type: 2}
+  explosion: {fileID: 11400000, guid: d1e7d1b2e66b9f6459d482ab947adca3, type: 2}
+  nonMineTiles:
+  - {fileID: 11400000, guid: 9990afdc10672d046aeebc5256947cc8, type: 2}
+  - {fileID: 11400000, guid: 314f151d1de61ae4e886211acae5f2ce, type: 2}
+  - {fileID: 11400000, guid: 5be70d54e4b336448b3aba56a8d227fb, type: 2}
+  - {fileID: 11400000, guid: a0c4e8b32817b58448c7b8c6aa01a4fd, type: 2}
+  - {fileID: 11400000, guid: 79cb1cb5e2586bb49949badcb2b1cd5a, type: 2}
+  - {fileID: 11400000, guid: d7af804f47e87b34e8865a025cb8fc5c, type: 2}
+  - {fileID: 11400000, guid: 7a91bf69a8861aa4da80c2de48377029, type: 2}
+  - {fileID: 11400000, guid: 3229bdda2c764584dbe38e6686eaba63, type: 2}
+  - {fileID: 11400000, guid: c3c2192027408374abe743fe988b28f4, type: 2}
+  greyTile: {fileID: 11400000, guid: 3c44fcbdd4d399a428268b6497da9776, type: 2}
+  gol: {fileID: 1520914525}
+  minefield: {fileID: 2136659679}
+  greyfield: {fileID: 190375889}
+--- !u!4 &257198104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257198102}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.03505, y: -4.52634, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -687,6 +747,55 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &1397318091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1397318093}
+  - component: {fileID: 1397318092}
+  m_Layer: 0
+  m_Name: MouseHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1397318092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397318091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7de757763b1b5c642bdf66925cc64c28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MouseHandler
+  greyfield: {fileID: 190375889}
+  gol: {fileID: 1520914525}
+  minefield: {fileID: 2136659679}
+  explosion: {fileID: 11400000, guid: d1e7d1b2e66b9f6459d482ab947adca3, type: 2}
+  gameOver: 0
+--- !u!4 &1397318093
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1397318091}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.74209, y: -0.24059, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1455108427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1116,7 +1225,7 @@ Tilemap:
   m_TileColorArray: []
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9843138, g: 0.9843138, b: 0.98823535, a: 1}
   m_Origin: {x: 0, y: 0, z: 0}
   m_Size: {x: 0, y: 0, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
@@ -1146,3 +1255,5 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1520914524}
   - {fileID: 1119121317}
+  - {fileID: 257198104}
+  - {fileID: 1397318093}
