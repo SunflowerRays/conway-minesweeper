@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class MineHider
 {
@@ -22,10 +23,10 @@ public class MineHider
         topCells.Clear();
 
         for (int i = (grid.centre.x - (grid.gridWidth / 2)); i <= (grid.centre.x + (grid.gridWidth / 2)); ++i)
-            {
+        {
 
-                for (int j = (grid.centre.y - (grid.gridHeight / 2)); j <= (grid.centre.y + (grid.gridHeight / 2)); ++j)
-                {
+            for (int j = (grid.centre.y - (grid.gridHeight / 2)); j <= (grid.centre.y + (grid.gridHeight / 2)); ++j)
+            {
 
                 topCells.Add((i, j));
 
@@ -37,5 +38,16 @@ public class MineHider
         onDetectionComplete?.Invoke();
     }
 
+    public Boolean reveal(int x, int y)
+    {
+
+
+        if (topCells.Remove((x, y)))
+        {
+            return true;
+        }
+
+        return false;
+    }
 
 }

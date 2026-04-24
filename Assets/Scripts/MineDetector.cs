@@ -79,4 +79,11 @@ public class MineDetector
         onDetectionComplete?.Invoke();
 
     }
+
+    //Called by MouseHandler.
+    public bool isMine(int x, int y)
+    {
+        return cellsData.Exists(cell => cell.x == x && cell.y == y && cell.mines == -1);
+    }
+
 }

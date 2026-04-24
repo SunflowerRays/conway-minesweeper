@@ -112,6 +112,11 @@ public class Generator
 
     }
 
+    public void Stop()
+    {
+        isRunning = false;
+    }
+
     private bool IsInsideBounds(Vector3Int cell)
     {
         return cell.x > centre.x - gol.grid.gridWidth / 2 &&
@@ -147,7 +152,7 @@ public class Generator
 
         return count;
 
-        
+
     }
 
     public IEnumerator Simulate()

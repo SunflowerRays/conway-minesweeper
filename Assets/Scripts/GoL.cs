@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
 public class GoL : MonoBehaviour
@@ -37,6 +38,10 @@ public class GoL : MonoBehaviour
     public void Start()
     {
         SetPattern(pattern);
+        if (generator != null)
+        {
+            StartCoroutine(generator.Simulate());
+        }
     }
 
     private void SetPattern(Pattern pattern)
@@ -75,9 +80,24 @@ public class GoL : MonoBehaviour
         time = 0f;
     }
 
+    void Update()
+    {
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            generator.Stop();
+        }
+    }
+
+
     private void OnEnable()
     {
-        StartCoroutine(generator.Simulate());
+
+        /* reactivate if restarting the generator becomes necessary later.
+        if (generator != null)
+        {
+            StartCoroutine(generator.Simulate());
+        }
+        */
     }
 
     private void OnDisable()
