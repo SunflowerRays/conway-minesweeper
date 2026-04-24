@@ -22,17 +22,10 @@ public class MineHider
     {
         topCells.Clear();
 
-        for (int i = (grid.centre.x - (grid.gridWidth / 2)); i <= (grid.centre.x + (grid.gridWidth / 2)); ++i)
+        foreach (var (i, j) in grid.GetAllCells())
         {
 
-            for (int j = (grid.centre.y - (grid.gridHeight / 2)); j <= (grid.centre.y + (grid.gridHeight / 2)); ++j)
-            {
-
-                topCells.Add((i, j));
-
-            }
-
-
+            topCells.Add((i, j));
 
         }
         onDetectionComplete?.Invoke();

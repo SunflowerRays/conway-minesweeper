@@ -26,7 +26,6 @@ public class HashSet2TileMap : MonoBehaviour
     public void mapper(HashSet<(int x, int y)> hashSet, Tilemap tileMap)
     {
         clear(tileMap);
-
         //assumption. hashSet and tileMap have the same dimensions.
         //conditional statement to detect call from the MineHider file.
         /*
@@ -42,7 +41,6 @@ public class HashSet2TileMap : MonoBehaviour
     public void mapper(List<MineDetector.CellData> cellsData, Tilemap tileMap)
     {
         clear(tileMap);
-
         foreach (var CellData in cellsData)
         {
             if (CellData.mines == -1)

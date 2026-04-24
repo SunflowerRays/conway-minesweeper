@@ -29,51 +29,32 @@ public class MineDetector
     {
         cellsData.Clear();
 
-        for (int i = (grid.centre.x - (grid.gridWidth / 2)); i <= (grid.centre.x + (grid.gridWidth / 2)); ++i)
+        foreach (var (i, j) in grid.GetAllCells())
         {
+            int mines = 0;
 
-            for (int j = (grid.centre.y - (grid.gridHeight / 2)); j <= (grid.centre.y + (grid.gridHeight / 2)); ++j)
+            if (liveRegistry.newAliveCells.Contains((i, j)))
             {
-
-                int mines = 0;
-
-                if (liveRegistry.newAliveCells.Contains((i, j)))
+                mines = -1;
+            }
+            else
+            {
+                for (int x = -1; x <= 1; x++)
                 {
-                    mines = -1;
-                }
-                else
-                {
-
-                    for (int x = -1; x <= 1; x++)
+                    for (int y = -1; y <= 1; y++)
                     {
-
-                        for (int y = -1; y <= 1; y++)
+                        if (x == 0 && y == 0) continue;
+                        if (liveRegistry.newAliveCells.Contains((i + x, j + y)))
                         {
-                            if (x == 0 && y == 0)
-                            {
-
-                                continue;
-                            }
-
-                            if (liveRegistry.newAliveCells.Contains((i + x, j + y)))
-                            {
-                                mines++;
-                            }
-
-
+                            mines++;
                         }
-
                     }
-
                 }
-
-                // add cell to cellsData
-                CellData cell = new CellData() { x = i, y = j, mines = mines };
-
-                cellsData.Add(cell);
-
             }
 
+            // add cell to cellsData - outside if/else
+            CellData cell = new CellData() { x = i, y = j, mines = mines };
+            cellsData.Add(cell);
         }
 
         onDetectionComplete?.Invoke();
