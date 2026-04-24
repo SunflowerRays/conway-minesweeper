@@ -5,12 +5,14 @@ using TreeEditor;
 using UnityEditor.EditorTools;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 
 
 public class HashSet2TileMap : MonoBehaviour
 {
     private HashSet<(int x, int y)> hashSet { get; set; }
     private Tilemap tileMap;
+    [SerializeField] private Tile aliveTile;
     [SerializeField] private Tile bomb;
     [SerializeField] private Tile explosion;
     [SerializeField] private Tile[] nonMineTiles;
@@ -18,6 +20,8 @@ public class HashSet2TileMap : MonoBehaviour
     [SerializeField] private GoL gol;
     [SerializeField] private Tilemap minefield;
     [SerializeField] private Tilemap greyfield;
+    [SerializeField] private Tilemap currentState;
+    [SerializeField] private Tilemap nextState;
     /// <summary>
     /// Read HashSet write to tilemap.
     /// </summary>
@@ -26,14 +30,19 @@ public class HashSet2TileMap : MonoBehaviour
     public void mapper(HashSet<(int x, int y)> hashSet, Tilemap tileMap)
     {
         clear(tileMap);
-        //assumption. hashSet and tileMap have the same dimensions.
-        //conditional statement to detect call from the MineHider file.
-        /*
-        if(tileMap == greyfield) { 
-        */
-        foreach (var cell in hashSet)
+        if (tileMap == currentState || tileMap == nextState)
         {
-            tileMap.SetTile(new Vector3Int(cell.x, cell.y, 0), greyTile);
+            foreach (var cell in hashSet)
+            {
+                tileMap.SetTile(new Vector3Int(cell.x, cell.y, 0), aliveTile);
+            }
+        }
+        else if (tileMap == greyfield)
+        {
+            foreach (var cell in hashSet)
+            {
+                tileMap.SetTile(new Vector3Int(cell.x, cell.y, 0), greyTile);
+            }
         }
 
     }
@@ -41,6 +50,7 @@ public class HashSet2TileMap : MonoBehaviour
     public void mapper(List<MineDetector.CellData> cellsData, Tilemap tileMap)
     {
         clear(tileMap);
+
         foreach (var CellData in cellsData)
         {
             if (CellData.mines == -1)

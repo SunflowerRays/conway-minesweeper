@@ -14,13 +14,13 @@ public class Generator
     private Tile aliveTile;
     private Tile deadTile;
     private HashSet<Vector3Int> cellsToCheck;
-    private Vector2Int centre;
+    private (int x, int y) centre;
     private bool isRunning = true;
     private GoL gol;
     private MineDetector mineDetector;
     private HashSet2TileMap hashSet2TileMap;
 
-    public Generator(GoL gol, LiveRegistry liveRegistry, Tilemap currentState, Tilemap nextState, Tile aliveTile, Tile deadTile, Vector2Int centre, MineDetector mineDetector = null, HashSet2TileMap hashSet2TileMap = null)
+    public Generator(GoL gol, LiveRegistry liveRegistry, Tilemap currentState, Tilemap nextState, Tile aliveTile, Tile deadTile, (int x, int y) centre, MineDetector mineDetector = null, HashSet2TileMap hashSet2TileMap = null)
     {
         //required
         this.gol = gol;
