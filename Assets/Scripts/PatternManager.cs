@@ -15,7 +15,7 @@ public class PatternManager
 
         this.liveRegistry = liveRegistry;
         pattern = new HashSet<(int x, int y)>();
-        
+
     }
 
 

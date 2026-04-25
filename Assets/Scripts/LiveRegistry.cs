@@ -12,7 +12,7 @@ public class LiveRegistry
 
     public LiveRegistry()
     {
-        
+
         aliveCells = new HashSet<Vector3Int>();
         newAliveCells = new HashSet<(int x, int y)>();
 

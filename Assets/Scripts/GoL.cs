@@ -80,6 +80,7 @@ public class GoL : MonoBehaviour
             else
             {
                 generator.Stop();
+                mineHider.coverMines(grid);
                 mouseHandler.SetMode(MouseHandler.GameMode.Minesweeper);
             }
         }
