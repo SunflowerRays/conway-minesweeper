@@ -1,17 +1,42 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class PatternManager
 {
 
-    //TODO: Refactor
+    public HashSet<(int x, int y)> pattern { get; set; }
 
-    public PatternManager()
+    public LiveRegistry liveRegistry;
+
+
+    public PatternManager(LiveRegistry liveRegistry)
     {
+
+        this.liveRegistry = liveRegistry;
+        pattern = new HashSet<(int x, int y)>();
 
     }
 
 
-    public HashSet<(int x, int y)> pattern { get; set; }
+    //public event Action onDetectionComplete;
+    public void SetPattern()
+    {
+        if (pattern.Count > 0)
+        {
+            liveRegistry.newAliveCells.Clear();
+
+            foreach (var cell in pattern)
+            {
+                liveRegistry.newAliveCells.Add(cell);
+                liveRegistry.aliveCells.Add(new Vector3Int(cell.x, cell.y, 0));
+            }
+
+            //onDetectionComplete?.Invoke();
+
+        }
+    }
+
 
     public (int x, int y) GetCentre(HashSet<(int x, int y)> pattern)
     {
