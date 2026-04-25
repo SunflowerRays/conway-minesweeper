@@ -22,6 +22,9 @@ public class HashSet2TileMap : MonoBehaviour
     [SerializeField] private Tilemap greyfield;
     [SerializeField] private Tilemap currentState;
     [SerializeField] private Tilemap nextState;
+
+
+
     /// <summary>
     /// Read HashSet write to tilemap.
     /// </summary>
@@ -44,7 +47,6 @@ public class HashSet2TileMap : MonoBehaviour
                 tileMap.SetTile(new Vector3Int(cell.x, cell.y, 0), greyTile);
             }
         }
-
     }
 
     public void mapper(List<MineDetector.CellData> cellsData, Tilemap tileMap)
@@ -76,7 +78,28 @@ public class HashSet2TileMap : MonoBehaviour
     }
 
 
-    //TODO: Read tilemap method.
+    public HashSet<(int x, int y)> readTileMap(Tilemap tileMap)
+    {
+        HashSet<(int x, int y)> temp = new HashSet<(int x, int y)>();
+
+        foreach (var position in tileMap.cellBounds.allPositionsWithin)
+        {
+            if (tileMap.GetTile(position) != null)
+            {
+                temp.Add((position.x, position.y));
+            }
+        }
+
+        return temp;
+    }
+
+    public (int width, int height) getTilemapDimensions(Tilemap tileMap)
+    {
+        // add comments
+        BoundsInt bounds = tileMap.cellBounds;
+        return (bounds.size.x, bounds.size.y);
+    }
+
 
 
     void Awake()

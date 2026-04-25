@@ -783,7 +783,6 @@ MonoBehaviour:
   gol: {fileID: 1520914525}
   minefield: {fileID: 2136659679}
   explosion: {fileID: 11400000, guid: d1e7d1b2e66b9f6459d482ab947adca3, type: 2}
-  gameOver: 0
 --- !u!4 &1397318093
 Transform:
   m_ObjectHideFlags: 0
@@ -995,6 +994,7 @@ MonoBehaviour:
   gridWidth: 12
   gridHeight: 12
   HashSet2TileMap: {fileID: 257198103}
+  mouseHandler: {fileID: 1397318092}
 --- !u!1 &1950171665
 GameObject:
   m_ObjectHideFlags: 0
