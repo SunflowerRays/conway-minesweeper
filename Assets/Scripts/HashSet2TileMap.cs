@@ -1,8 +1,12 @@
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Runtime.InteropServices;
+#if UNITY_EDITOR
+// editor-only code here
+
 using TreeEditor;
 using UnityEditor.EditorTools;
+#endif
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
