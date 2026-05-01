@@ -1,3 +1,4 @@
+# Contributing
 Roles:
   DevOps Architect:
     Configures and maintains CI/CD pipeline and performs rollbacks
