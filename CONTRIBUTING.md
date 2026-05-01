@@ -1,7 +1,7 @@
 # Contributing
 Roles:
   DevOps Architect:
-    Configures and maintains CI/CD pipeline and performs rollbacks
+    Configures and maintains CI/CD pipeline and performs rollbacks.
   Product Owner:
     Pushes release tags and requirements gathering.
   Cybersecurity Administrator:
