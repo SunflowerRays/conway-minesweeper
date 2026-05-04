@@ -46,4 +46,4 @@ jobs:
           VALIDATE_MARKDOWN_PRETTIER: false
           VALIDATE_SPELL_CODESPELL: false
           ZIZMOR_EXTRA_ARGS: --suppress superfluous-actions --suppress ref-version-mismatch
-          FILTER_REGEX_EXCLUDE: .github/dependabot.yaml
+          FILTER_REGEX_EXCLUDE: (.github/dependabot.yaml|Assets/TextMesh Pro/.*)
