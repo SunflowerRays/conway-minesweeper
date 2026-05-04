@@ -21,50 +21,58 @@ public class MineDetector
         this.grid = grid;
         this.liveRegistry = liveRegistry;
         cellsData = new List<CellData>();
-        detector();
+
+        detectorOverAllCells();
+
+
     }
 
 
-    public void detector()
+    public void detectorOverAllCells()
     {
+
         cellsData.Clear();
 
         foreach (var (i, j) in grid.GetAllCells())
         {
-            int mines = 0;
 
-            if (liveRegistry.newAliveCells.Contains((i, j)))
-            {
-                mines = -1;
-            }
-            else
-            {
-                for (int x = -1; x <= 1; x++)
-                {
-                    for (int y = -1; y <= 1; y++)
-                    {
-                        if (x == 0 && y == 0) continue;
-                        if (liveRegistry.newAliveCells.Contains((i + x, j + y)))
-                        {
-                            mines++;
-                        }
-                    }
-                }
-            }
-
-            // add cell to cellsData - outside if/else
-            CellData cell = new CellData() { x = i, y = j, mines = mines };
+            var (x, y, mines) = detector(i, j);
+            CellData cell = new CellData() { x = x, y = y, mines = mines };
             cellsData.Add(cell);
         }
 
         onDetectionComplete?.Invoke();
 
+
     }
 
-    //Called by MouseHandler.
-    public bool isMine(int x, int y)
+
+    public (int x, int y, int mines) detector(int i, int j)
     {
-        return cellsData.Exists(cell => cell.x == x && cell.y == y && cell.mines == -1);
+
+        int mines = 0;
+
+        if (liveRegistry.newAliveCells.Contains((i, j)))
+        {
+            mines = -1;
+        }
+        else
+        {
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    if (x == 0 && y == 0) continue;
+                    if (liveRegistry.newAliveCells.Contains((i + x, j + y)))
+                    {
+                        mines++;
+                    }
+                }
+            }
+
+        }
+        return (i, j, mines);
     }
+
 
 }

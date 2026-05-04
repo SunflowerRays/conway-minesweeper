@@ -1,2 +1,20 @@
 fileFormatVersion: 2
 guid: 6e5a9fa40c822314ebcce37f0a8372b4
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - aliveTile: {instanceID: 0}
+  - bomb: {instanceID: 0}
+  - explosion: {instanceID: 0}
+  - greyTile: {instanceID: 0}
+  - gol: {instanceID: 0}
+  - minefield: {instanceID: 0}
+  - greyfield: {instanceID: 0}
+  - currentState: {instanceID: 0}
+  - nextState: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

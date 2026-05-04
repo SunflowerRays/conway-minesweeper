@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 
 public class PatternManager
 {
 
-    public HashSet<(int x, int y)> pattern { get; set; }
+    public HashSet<(int x, int y)> pattern { get; private set; }
 
     public LiveRegistry liveRegistry;
-
+    public event Action onAddCell;
+    public event Action onSubtractCell;
 
     public PatternManager(LiveRegistry liveRegistry)
     {
@@ -19,8 +20,32 @@ public class PatternManager
     }
 
 
+    public bool ToggleCell(int x, int y)
+    {
+        if (pattern.Contains((x, y)))
+        {
+            pattern.Remove((x, y));
+            liveRegistry.newAliveCells.Remove((x, y));
+            onSubtractCell?.Invoke();
+            return true;
+        }
+        else
+        {
+            pattern.Add((x, y));
+            liveRegistry.newAliveCells.Add((x, y));
+            onAddCell?.Invoke();
+            return false;
+        }
+    }
+
+    public void ClearPattern()
+    {
+        pattern.Clear();
+    }
+
+
     //public event Action onDetectionComplete;
-    public void SetPattern()
+    public void Pattern2AliveCells()
     {
         if (pattern.Count > 0)
         {
@@ -29,13 +54,14 @@ public class PatternManager
             foreach (var cell in pattern)
             {
                 liveRegistry.newAliveCells.Add(cell);
-                liveRegistry.aliveCells.Add(new Vector3Int(cell.x, cell.y, 0));
-            }
 
-            //onDetectionComplete?.Invoke();
+
+            }
 
         }
     }
+
+
 
 
     public (int x, int y) GetCentre(HashSet<(int x, int y)> pattern)

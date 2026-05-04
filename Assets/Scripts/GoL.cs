@@ -13,7 +13,6 @@ public class GoL : MonoBehaviour
     [SerializeField] private Tilemap nextState;
     [SerializeField] public Tile aliveTile;
     [SerializeField] private Tile deadTile;
-
     [SerializeField] public float freqInterval = 0.20f;
     [SerializeField] private int gridWidth = 12;
     [SerializeField] private int gridHeight = 12;
@@ -25,46 +24,28 @@ public class GoL : MonoBehaviour
     public MineDetector mineDetector;
     public MineHider mineHider;
     public PatternManager patternManager;
+    public ScoreKeeper scoreKeeper;
     [SerializeField] public HashSet2TileMap HashSet2TileMap;
     [SerializeField] public MouseHandler mouseHandler;
-
+    [SerializeField] public TextHandler textHandler;
 
     public int iterations { get; internal set; }
     public float time { get; internal set; }
 
     private void Awake()
     {
-        centre = (0, 0);
         liveRegistry = new LiveRegistry();
         patternManager = new PatternManager(liveRegistry);
         grid = new Grid(centre, gridWidth, gridHeight);
         mineDetector = new MineDetector(grid, liveRegistry);
-        mineHider = new MineHider(grid);
+        mineHider = new MineHider(grid, liveRegistry);
         generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre, mineDetector);
+        scoreKeeper = new ScoreKeeper(Application.persistentDataPath);
     }
 
     public void Start()
     {
-
-        patternManager.SetPattern();
         liveRegistry.population = liveRegistry.newAliveCells.Count;
-        //mineHider.coverMines(grid);
-        HashSet2TileMap.mapper(liveRegistry.newAliveCells, currentState);
-
-    }
-
-    private void Clear()
-    {
-        currentState.ClearAllTiles();
-        nextState.ClearAllTiles();
-
-        //TODO Refactor
-        liveRegistry.aliveCells.Clear();
-        liveRegistry.newAliveCells.Clear();
-
-        liveRegistry.population = 0;
-        iterations = 0;
-        time = 0f;
     }
 
     void Update()
@@ -73,7 +54,7 @@ public class GoL : MonoBehaviour
         {
             if (!generator.isRunning)
             {
-                patternManager.SetPattern();
+                patternManager.Pattern2AliveCells();
                 mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
                 StartCoroutine(generator.Simulate());
             }
@@ -85,7 +66,6 @@ public class GoL : MonoBehaviour
             }
         }
     }
-
 
     private void OnEnable()
     {
