@@ -66,6 +66,7 @@ public class GoL : MonoBehaviour
 
     private void OnEnable()
     {
+
     }
 
     private void OnDisable()

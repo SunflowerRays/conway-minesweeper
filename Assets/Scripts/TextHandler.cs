@@ -40,7 +40,7 @@ public class TextHandler : MonoBehaviour
         {
             currentTime += Time.deltaTime;
             DisplayTime(currentTime);
-            
+
         }
         mineCountText.text = string.Format("Mines: {0}", mineCount);
     }

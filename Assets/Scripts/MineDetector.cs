@@ -50,7 +50,7 @@ public class MineDetector
     public (int x, int y, int mines) detector(int i, int j)
     {
 
-            int mines = 0;
+        int mines = 0;
 
         if (liveRegistry.newAliveCells.Contains((i, j)))
         {
@@ -69,7 +69,7 @@ public class MineDetector
                     }
                 }
             }
-            
+
         }
         return (i, j, mines);
     }

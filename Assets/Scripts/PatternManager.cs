@@ -53,8 +53,8 @@ public class PatternManager
             foreach (var cell in pattern)
             {
                 liveRegistry.newAliveCells.Add(cell);
-            
-            
+
+
             }
 
         }

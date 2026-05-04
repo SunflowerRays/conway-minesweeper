@@ -32,7 +32,7 @@ public class MineHider
 
         }
 
- 
+
         onDetectionComplete?.Invoke();
         onGameStart?.Invoke();
 
