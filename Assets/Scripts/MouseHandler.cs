@@ -55,7 +55,11 @@ public class MouseHandler : MonoBehaviour
         }
         mode = newMode;
 
+    public void SetMode(GameMode newMode)
+    {
+        mode = newMode;
     }
+
 
     void Update()
     {
@@ -227,6 +231,11 @@ public class MouseHandler : MonoBehaviour
             gol.scoreKeeper.saveScore(latestScore);
 
         }
+    }
+
+    private void playGameOver()
+    {
 
     }
+
 }

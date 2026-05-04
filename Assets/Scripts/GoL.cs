@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
+using static MouseHandler;
+using static UnityEngine.InputSystem.HID.HID;
 
 public class GoL : MonoBehaviour
 {
@@ -14,6 +16,7 @@ public class GoL : MonoBehaviour
     [SerializeField] public float freqInterval = 0.20f;
     [SerializeField] private int gridWidth = 12;
     [SerializeField] private int gridHeight = 12;
+
     public (int x, int y) centre;
     public Grid grid;
     public LiveRegistry liveRegistry;
