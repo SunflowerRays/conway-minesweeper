@@ -2,6 +2,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
+using static MineDetector;
 
 public class MouseHandler : MonoBehaviour
 {
@@ -110,7 +111,7 @@ public class MouseHandler : MonoBehaviour
     //SetMode
 
 
-
+    // https://learn.microsoft.com/en-us/dotnet/api/system.collections.queue?view=net-10.0
     private void playMineSweeper()
     {
 
@@ -127,7 +128,10 @@ public class MouseHandler : MonoBehaviour
                 {
                     greyfield.SetTile(cellPosition, null);
 
-                if (gol.mineDetector.isMine(x, y))
+                var (_, _, mines) = gol.mineDetector.detector(x, y);
+
+
+                if (mines == -1)
                 {
 
                     greyfield.ClearAllTiles();
@@ -139,6 +143,24 @@ public class MouseHandler : MonoBehaviour
                     score.levelCleared = false;
                     mode = GameMode.GameOver;
                 }
+                if (mines == 0)
+                {
+                    for (int dx = x-1; dx<=x+1; dx++)
+                    {
+                        for (int dy = y-1; dy <= y+1; dy++)
+                        {
+                            if (dx == 0 && dy == 0) continue;
+
+                            cellPosition.x = dx;
+                            cellPosition.y = dy;
+                            greyfield.SetTile(cellPosition, null);
+
+
+                        }
+                    }
+
+                }
+
             }
         }
         if (Mouse.current.rightButton.wasPressedThisFrame)

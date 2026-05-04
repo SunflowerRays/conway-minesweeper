@@ -102,7 +102,7 @@ public class Generator
 
         if (mineDetector != null)
         {
-            mineDetector.detector();
+            mineDetector.detectorOverAllCells();
         }
 
     }
