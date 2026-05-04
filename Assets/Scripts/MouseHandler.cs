@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,6 +23,7 @@ public class MouseHandler : MonoBehaviour
     private bool isGameOver;
     private GameMode mode = GameMode.PatternEdit;
     private (float time, int points, bool levelCleared, string playerName) score;
+    private bool cascadeRevealEnabled = true;
 
     void Start()
     {
@@ -39,13 +42,13 @@ public class MouseHandler : MonoBehaviour
 
     public void SetMode(GameMode newMode)
     {
-        
+
         if (newMode == GameMode.PatternEdit)
         {
             if (gol.generator.isRunning) return;
             gol.patternManager.ClearPattern();
         }
-        
+
         if (newMode == GameMode.Minesweeper)
         {
             score = (0, 0, false, null);
@@ -121,46 +124,59 @@ public class MouseHandler : MonoBehaviour
             Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
             Vector3Int cellPosition = greyfield.WorldToCell(worldPosition);
 
-                int x = cellPosition.x;
-                int y = cellPosition.y;
+            int x = cellPosition.x;
+            int y = cellPosition.y;
 
-                if (gol.mineHider.reveal(x, y))
+            Queue<(int x, int y)> cellsToCheck = new Queue<(int x, int y)>();
+
+
+            if (gol.mineHider.reveal(x, y))
+            {
+
+                cellsToCheck.Enqueue((x, y));
+
+                greyfield.SetTile(cellPosition, null);
+
+                while (cellsToCheck.Count > 0)
                 {
-                    greyfield.SetTile(cellPosition, null);
-
-                var (_, _, mines) = gol.mineDetector.detector(x, y);
-
-
-                if (mines == -1)
-                {
-
-                    greyfield.ClearAllTiles();
-                    gol.mineHider.topCells.Clear();
-                    minefield.SetTile(cellPosition, explosion);
+                    var (bx, by) = cellsToCheck.Dequeue();
+                    var (_, _, mines) = gol.mineDetector.detector(bx, by);
 
 
-                    score.points = 0;
-                    score.levelCleared = false;
-                    mode = GameMode.GameOver;
-                }
-                if (mines == 0)
-                {
-                    for (int dx = x-1; dx<=x+1; dx++)
+                    if (mines == -1)
                     {
-                        for (int dy = y-1; dy <= y+1; dy++)
+                        greyfield.ClearAllTiles();
+                        gol.mineHider.topCells.Clear();
+                        minefield.SetTile(cellPosition, explosion);
+
+                        score.points = 0;
+                        score.levelCleared = false;
+                        mode = GameMode.GameOver;
+                    }
+                    if (mines == 0 && cascadeRevealEnabled)
+                    {
+                        for (int cx = -1; cx <= 1; cx++)
                         {
-                            if (dx == 0 && dy == 0) continue;
+                            for (int cy = -1; cy <= 1; cy++)
+                            {
+                                if (cx == 0 && cy == 0) continue;
 
-                            cellPosition.x = dx;
-                            cellPosition.y = dy;
-                            greyfield.SetTile(cellPosition, null);
+                                int dx = bx + cx;
 
+                                int dy = by + cy;
 
+                                if (gol.mineHider.reveal(dx, dy))
+                                {
+                                    greyfield.SetTile(new Vector3Int(dx, dy, 0), null);
+                                    cellsToCheck.Enqueue((dx, dy));
+                                }
+
+                            }
                         }
+
                     }
 
                 }
-
             }
         }
         if (Mouse.current.rightButton.wasPressedThisFrame)
@@ -182,6 +198,7 @@ public class MouseHandler : MonoBehaviour
             }
 
         }
+
     }
 
     private void playGameOver()
@@ -194,7 +211,7 @@ public class MouseHandler : MonoBehaviour
         score.time = gol.textHandler.currentTime;
         if (score.time > 0.00f)
 
-            // add player name input.
+        // add player name input.
 
 
         {

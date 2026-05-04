@@ -74,10 +74,5 @@ public class MineDetector
         return (i, j, mines);
     }
 
-    //Called by MouseHandler.
-    public bool isMine(int x, int y)
-    {
-        return cellsData.Exists(cell => cell.x == x && cell.y == y && cell.mines == -1);
-    }
 
 }
