@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
@@ -9,21 +10,115 @@ public class MouseHandler : MonoBehaviour
     [SerializeField] private GoL gol;
     [SerializeField] private Tilemap minefield;
     [SerializeField] private Tile explosion;
-    public bool gameOver;
+    [SerializeField] private Tile flag;
+    [SerializeField] private Tile greyTile;
+
+
+    private Tilemap currentState;
+
+    public enum GameMode { PatternEdit, Simulating, Minesweeper, GameOver }
+    private bool isGameOver;
+    private GameMode mode = GameMode.PatternEdit;
+    private (float time, int points, bool levelCleared, string playerName) score;
+
     void Start()
     {
+        currentState = gol.currentState;
+
+        gol.mineHider.onWin += () =>
+        {
+            //update points when scoring is updated.
+            score.points = 500;
+            score.levelCleared = true;
+            mode = GameMode.GameOver;
+        };
+
+
+    }
+
+    public void SetMode(GameMode newMode)
+    {
+        
+        if (newMode == GameMode.PatternEdit)
+        {
+            if (gol.generator.isRunning) return;
+            gol.patternManager.ClearPattern();
+        }
+        
+        if (newMode == GameMode.Minesweeper)
+        {
+            score = (0, 0, false, null);
+        }
+        mode = newMode;
 
     }
 
     void Update()
     {
-        if (gameOver == false)
+
+        if (mode == GameMode.PatternEdit) playPatternEditor();
+        if (mode == GameMode.Simulating) playSimulator();
+        if (mode == GameMode.Minesweeper) playMineSweeper();
+        if (mode == GameMode.GameOver) playGameOver();
+    }
+
+
+
+    private void playPatternEditor()
+    {
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
+
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
+            Vector3Int cellPosition = currentState.WorldToCell(worldPosition);
+
+            int x = cellPosition.x;
+            int y = cellPosition.y;
+
+            if (x < gol.grid.centre.x - gol.grid.gridWidth / 2 ||
+                x > gol.grid.centre.x + gol.grid.gridWidth / 2 ||
+                y < gol.grid.centre.y - gol.grid.gridHeight / 2 ||
+                y > gol.grid.centre.y + gol.grid.gridHeight / 2) return;
+
+            if (gol.patternManager.ToggleCell(x, y))
             {
-                Vector2 mousePosition = Mouse.current.position.ReadValue();
-                Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
-                Vector3Int cellPosition = greyfield.WorldToCell(worldPosition);
+                gol.currentState.SetTile(cellPosition, null);
+            }
+            else
+            {
+                gol.currentState.SetTile(cellPosition, gol.aliveTile);
+            }
+
+        }
+    }
+
+
+    private void playSimulator()
+    {
+        //recieve pattern
+
+        //start simulation
+
+        //pause simulation or pick generation from a sliding input
+
+        //confirm generation and start playMineSweeper
+
+    }
+
+    //SetMode
+
+
+
+    private void playMineSweeper()
+    {
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
+            Vector3Int cellPosition = greyfield.WorldToCell(worldPosition);
 
                 int x = cellPosition.x;
                 int y = cellPosition.y;
@@ -32,15 +127,66 @@ public class MouseHandler : MonoBehaviour
                 {
                     greyfield.SetTile(cellPosition, null);
 
-                    if (gol.mineDetector.isMine(x, y))
-                    {
-                        gameOver = true;
-                        greyfield.ClearAllTiles();
-                        gol.mineHider.topCells.Clear();
-                        minefield.SetTile(cellPosition, explosion);
-                    }
+                if (gol.mineDetector.isMine(x, y))
+                {
+
+                    greyfield.ClearAllTiles();
+                    gol.mineHider.topCells.Clear();
+                    minefield.SetTile(cellPosition, explosion);
+
+
+                    score.points = 0;
+                    score.levelCleared = false;
+                    mode = GameMode.GameOver;
                 }
             }
+        }
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
+            Vector3Int cellPosition = greyfield.WorldToCell(worldPosition);
+
+            if (gol.mineHider.topCells.Contains((cellPosition.x, cellPosition.y)))
+            {
+                if (greyfield.GetTile(cellPosition) == flag)
+                {
+                    greyfield.SetTile(cellPosition, greyTile);
+                }
+                else
+                {
+                    greyfield.SetTile(cellPosition, flag);
+                }
+            }
+
+        }
+    }
+
+    private void playGameOver()
+    {
+
+        if (isGameOver) return;
+        isGameOver = true;
+
+        gol.textHandler.Stop();
+        score.time = gol.textHandler.currentTime;
+        if (score.time > 0.00f)
+
+            // add player name input.
+
+
+        {
+
+            ScoreKeeper.LatestScore latestScore = new ScoreKeeper.LatestScore()
+            {
+                time = score.time,
+                points = score.points,
+                levelCleared = score.levelCleared,
+                playerName = score.playerName
+            };
+
+            gol.scoreKeeper.saveScore(latestScore);
+
         }
 
     }

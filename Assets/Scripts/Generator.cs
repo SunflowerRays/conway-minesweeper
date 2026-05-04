@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,12 +14,15 @@ public class Generator
     private Tilemap nextState;
     private Tile aliveTile;
     private Tile deadTile;
-    private HashSet<Vector3Int> cellsToCheck;
+    private HashSet<(int x, int y)> cellsToCheck;
     private (int x, int y) centre;
     private bool isRunning = true;
     private GoL gol;
     private MineDetector mineDetector;
     private HashSet2TileMap hashSet2TileMap;
+
+    public event Action onGeneration;
+
 
     public Generator(GoL gol, LiveRegistry liveRegistry, Tilemap currentState, Tilemap nextState, Tile aliveTile, Tile deadTile, (int x, int y) centre, MineDetector mineDetector = null, HashSet2TileMap hashSet2TileMap = null)
     {
@@ -35,16 +39,14 @@ public class Generator
         this.mineDetector = mineDetector;
         this.hashSet2TileMap = hashSet2TileMap;
 
-        cellsToCheck = new HashSet<Vector3Int>();
+        cellsToCheck = new HashSet<(int x, int y)>();
 
     }
 
-    public bool IsAlive(Vector3Int cell)
+    private bool IsAlive(int x, int y)
     {
-        return currentState.GetTile(cell) == aliveTile;
-
+        return liveRegistry.newAliveCells.Contains((x, y));
     }
-
 
     // TODO: Decrease Cognitive Complexity of this Method. The paper from the university in Bangladesh should help with this.
     // TODO: Refactor to use plain C#.
@@ -52,47 +54,40 @@ public class Generator
     {
         cellsToCheck.Clear();
 
-        foreach (Vector3Int cell in liveRegistry.aliveCells)
+        foreach (var (x, y) in liveRegistry.newAliveCells)
         {
-            for (int x = -1; x <= 1; x++)
+            for (int dx = -1; dx <= 1; dx++)
             {
-
-                for (int y = -1; y <= 1; y++)
+                for (int dy = -1; dy <= 1; dy++)
                 {
-                    cellsToCheck.Add(cell + new Vector3Int(x, y));
+                    cellsToCheck.Add((x + dx, y + dy));
                 }
-
             }
         }
 
-        foreach (Vector3Int cell in cellsToCheck)
+        foreach (var (x, y) in cellsToCheck)
         {
-            int neighbours = CountNeighbours(cell);
-            bool alive = IsAlive(cell);
+            int neighbours = CountNeighbours(x, y);
+            bool alive = IsAlive(x, y);
 
-
-            if (!alive && neighbours == 3 && IsInsideBounds(cell))
+            if (!alive && neighbours == 3 && IsInsideBounds(x, y))
             {
-                nextState.SetTile(cell, aliveTile);
-                liveRegistry.aliveCells.Add(cell);
-                liveRegistry.newAliveCells.Add((cell.x, cell.y));
+                nextState.SetTile(new Vector3Int(x, y, 0), aliveTile);
+                liveRegistry.newAliveCells.Add((x, y));
             }
             else if (alive && (neighbours < 2 || neighbours > 3))
             {
-                nextState.SetTile(cell, deadTile);
-                liveRegistry.aliveCells.Remove(cell);
-                liveRegistry.newAliveCells.Remove((cell.x, cell.y));
+                nextState.SetTile(new Vector3Int(x, y, 0), deadTile);
+                liveRegistry.newAliveCells.Remove((x, y));
             }
-            else if (cell.x < centre.x - gol.grid.gridWidth / 2 || cell.x > centre.x + gol.grid.gridWidth / 2 || cell.y < centre.y - gol.grid.gridHeight / 2 || cell.y > centre.y + gol.grid.gridHeight / 2)
+            else if (x < centre.x - gol.grid.gridWidth / 2 || x > centre.x + gol.grid.gridWidth / 2 || y < centre.y - gol.grid.gridHeight / 2 || y > centre.y + gol.grid.gridHeight / 2)
             {
-                nextState.SetTile(cell, deadTile);
-                liveRegistry.aliveCells.Remove(cell);
-                liveRegistry.newAliveCells.Remove((cell.x, cell.y));
+                nextState.SetTile(new Vector3Int(x, y, 0), deadTile);
+                liveRegistry.newAliveCells.Remove((x, y));
             }
             else
             {
-                nextState.SetTile(cell, currentState.GetTile(cell));
-                //no change to alive cells.
+                nextState.SetTile(new Vector3Int(x, y, 0), currentState.GetTile(new Vector3Int(x, y, 0)));
             }
         }
 
@@ -117,42 +112,33 @@ public class Generator
         isRunning = false;
     }
 
-    private bool IsInsideBounds(Vector3Int cell)
+    private bool IsInsideBounds(int x, int y)
     {
-        return cell.x > centre.x - gol.grid.gridWidth / 2 &&
-               cell.x < centre.x + gol.grid.gridWidth / 2 &&
-               cell.y > centre.y - gol.grid.gridHeight / 2 &&
-               cell.y < centre.y + gol.grid.gridHeight / 2;
+        return x > centre.x - gol.grid.gridWidth / 2 &&
+               x < centre.x + gol.grid.gridWidth / 2 &&
+               y > centre.y - gol.grid.gridHeight / 2 &&
+               y < centre.y + gol.grid.gridHeight / 2;
     }
 
 
-    private int CountNeighbours(Vector3Int cell)
+    private int CountNeighbours(int x, int y)
     {
         int count = 0;
 
-        for (int x = -1; x <= 1; x++)
+        for (int dx = -1; dx <= 1; dx++)
         {
-
-            for (int y = -1; y <= 1; y++)
+            for (int dy = -1; dy <= 1; dy++)
             {
-                Vector3Int neighbour = cell + new Vector3Int(x, y);
+                if (dx == 0 && dy == 0) continue;
 
-                //excludes the cell passed as a parameter from the count of its neighbours.
-                if (x == 0 && y == 0)
-                {
-                    continue;
-                }
-                else if (IsAlive(neighbour))
+                if (IsAlive(x + dx, y + dy))
                 {
                     count++;
                 }
             }
-
         }
 
         return count;
-
-
     }
 
     public IEnumerator Simulate()
@@ -172,6 +158,8 @@ public class Generator
             liveRegistry.population = liveRegistry.newAliveCells.Count;
             gol.iterations++;
             gol.time += gol.freqInterval;
+
+            onGeneration?.Invoke();
 
             yield return new WaitForSeconds(gol.freqInterval);
         }
