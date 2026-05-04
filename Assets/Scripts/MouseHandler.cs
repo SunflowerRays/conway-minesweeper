@@ -54,11 +54,8 @@ public class MouseHandler : MonoBehaviour
             score = (0, 0, false, null);
         }
         mode = newMode;
-
-    public void SetMode(GameMode newMode)
-    {
-        mode = newMode;
     }
+
 
 
     void Update()
@@ -78,9 +75,7 @@ public class MouseHandler : MonoBehaviour
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
 
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
-            Vector3Int cellPosition = currentState.WorldToCell(worldPosition);
+            Vector3Int cellPosition = GetCellPosition(currentState);
 
             int x = cellPosition.x;
             int y = cellPosition.y;
@@ -124,9 +119,7 @@ public class MouseHandler : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
-            Vector3Int cellPosition = greyfield.WorldToCell(worldPosition);
+            Vector3Int cellPosition = GetCellPosition(greyfield);
 
             int x = cellPosition.x;
             int y = cellPosition.y;
@@ -233,9 +226,11 @@ public class MouseHandler : MonoBehaviour
         }
     }
 
-    private void playGameOver()
+    private Vector3Int GetCellPosition(Tilemap tilemap)
     {
-
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
+        return tilemap.WorldToCell(worldPosition);
     }
 
 }
