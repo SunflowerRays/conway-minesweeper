@@ -16,7 +16,7 @@ public class Generator
     private Tile deadTile;
     private HashSet<(int x, int y)> cellsToCheck;
     private (int x, int y) centre;
-    private bool isRunning = true;
+    public bool isRunning = false;
     private GoL gol;
     private MineDetector mineDetector;
     private HashSet2TileMap hashSet2TileMap;
@@ -144,7 +144,7 @@ public class Generator
     public IEnumerator Simulate()
     {
 
-
+        isRunning = true;
 
 
         //Does not support changing interval during simulation.
