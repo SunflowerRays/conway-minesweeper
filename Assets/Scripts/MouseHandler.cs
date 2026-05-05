@@ -221,7 +221,7 @@ public class MouseHandler : MonoBehaviour
             };
 
             gol.scoreKeeper.saveScore(latestScore);
-            
+
         }
     }
 

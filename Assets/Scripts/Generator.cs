@@ -12,7 +12,7 @@ public class Generator
 
     private Grid grid;
     private MineDetector mineDetector;
-    
+
     public event Action onGeneration;
 
 
@@ -51,8 +51,6 @@ public class Generator
                 }
             }
         }
-
-
 
         foreach (var (x, y) in cellsToCheck)
         {
@@ -121,5 +119,5 @@ public class Generator
         return count;
     }
 
-   
+
 }
