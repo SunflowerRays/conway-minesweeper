@@ -46,7 +46,7 @@ public class MouseHandler : MonoBehaviour
 
         if (newMode == GameMode.PatternEdit)
         {
-            if (gol.generator.isRunning) return;
+            if (gol.isGeneratorRunning) return;
             gol.patternManager.ClearPattern();
         }
 
