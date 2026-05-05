@@ -15,7 +15,6 @@ using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
 public class HashSet2TileMap : MonoBehaviour
 {
     private HashSet<(int x, int y)> hashSet { get; set; }
-    private Tilemap tileMap;
     [SerializeField] private Tile aliveTile;
     [SerializeField] private Tile bomb;
     [SerializeField] private Tile explosion;
@@ -56,7 +55,6 @@ public class HashSet2TileMap : MonoBehaviour
     public void mapper(List<MineDetector.CellData> cellsData, Tilemap tileMap)
     {
         clear(tileMap);
-
         foreach (var CellData in cellsData)
         {
             if (CellData.mines == -1)
@@ -114,6 +112,7 @@ public class HashSet2TileMap : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        gol.generator.onGeneration += () => mapper(gol.liveRegistry.newAliveCells, currentState);
         gol.mineDetector.onDetectionComplete += () => mapper(gol.mineDetector.cellsData, minefield);
         gol.mineHider.onDetectionComplete += () => mapper(gol.mineHider.topCells, greyfield);
     }

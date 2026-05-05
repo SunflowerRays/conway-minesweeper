@@ -25,9 +25,12 @@ public class GoL : MonoBehaviour
     public MineHider mineHider;
     public PatternManager patternManager;
     public ScoreKeeper scoreKeeper;
+    public bool isGeneratorRunning;
     [SerializeField] public HashSet2TileMap HashSet2TileMap;
     [SerializeField] public MouseHandler mouseHandler;
     [SerializeField] public TextHandler textHandler;
+
+    public int numberOfHighScores = 3;
 
     public int iterations { get; internal set; }
     public float time { get; internal set; }
@@ -39,7 +42,7 @@ public class GoL : MonoBehaviour
         grid = new Grid(centre, gridWidth, gridHeight);
         mineDetector = new MineDetector(grid, liveRegistry);
         mineHider = new MineHider(grid, liveRegistry);
-        generator = new Generator(this, liveRegistry, currentState, nextState, aliveTile, deadTile, centre, mineDetector);
+        generator = new Generator(grid, liveRegistry, centre, mineDetector);
         scoreKeeper = new ScoreKeeper(Application.persistentDataPath);
     }
 
@@ -52,15 +55,15 @@ public class GoL : MonoBehaviour
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
-            if (!generator.isRunning)
+            if (!isGeneratorRunning)
             {
                 patternManager.Pattern2AliveCells();
                 mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
-                StartCoroutine(generator.Simulate());
+                StartCoroutine(Simulate());
             }
             else
             {
-                generator.Stop();
+                StopGenerator();
                 mineHider.coverMines(grid);
                 mouseHandler.SetMode(MouseHandler.GameMode.Minesweeper);
             }
@@ -71,6 +74,29 @@ public class GoL : MonoBehaviour
     {
 
     }
+
+
+    private IEnumerator Simulate()
+    {
+        isGeneratorRunning = true;
+
+        yield return new WaitForSeconds(freqInterval);
+
+        while (isGeneratorRunning)
+        {
+            generator.UpdateState();
+            liveRegistry.population = liveRegistry.newAliveCells.Count;
+            iterations++;
+            time += freqInterval;
+            yield return new WaitForSeconds(freqInterval);
+        }
+    }
+
+    public void StopGenerator()
+    {
+        isGeneratorRunning = false;
+    }
+
 
     private void OnDisable()
     {
