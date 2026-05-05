@@ -29,6 +29,8 @@ public class GoL : MonoBehaviour
     [SerializeField] public MouseHandler mouseHandler;
     [SerializeField] public TextHandler textHandler;
 
+    public int numberOfHighScores = 3;
+
     public int iterations { get; internal set; }
     public float time { get; internal set; }
 

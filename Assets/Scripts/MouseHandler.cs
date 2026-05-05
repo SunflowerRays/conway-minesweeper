@@ -32,6 +32,7 @@ public class MouseHandler : MonoBehaviour
         gol.mineHider.onWin += () =>
         {
             //update points when scoring is updated.
+            score.playerName = "Pauline Par Excellence";
             score.points = 500;
             score.levelCleared = true;
             mode = GameMode.GameOver;
@@ -75,7 +76,7 @@ public class MouseHandler : MonoBehaviour
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
 
-            Vector3Int cellPosition = GetCellPosition(currentState);
+            Vector3Int cellPosition = getCellPosition(currentState);
 
             int x = cellPosition.x;
             int y = cellPosition.y;
@@ -110,8 +111,6 @@ public class MouseHandler : MonoBehaviour
 
     }
 
-    //SetMode
-
 
     // https://learn.microsoft.com/en-us/dotnet/api/system.collections.queue?view=net-10.0
     private void playMineSweeper()
@@ -119,7 +118,7 @@ public class MouseHandler : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            Vector3Int cellPosition = GetCellPosition(greyfield);
+            Vector3Int cellPosition = getCellPosition(greyfield);
 
             int x = cellPosition.x;
             int y = cellPosition.y;
@@ -145,7 +144,7 @@ public class MouseHandler : MonoBehaviour
                         greyfield.ClearAllTiles();
                         gol.mineHider.topCells.Clear();
                         minefield.SetTile(cellPosition, explosion);
-
+                        score.playerName = "Mac Par Null";
                         score.points = 0;
                         score.levelCleared = false;
                         mode = GameMode.GameOver;
@@ -200,7 +199,7 @@ public class MouseHandler : MonoBehaviour
 
     private void playGameOver()
     {
-
+        gol.textHandler.showHighScores();
         if (isGameOver) return;
         isGameOver = true;
 
@@ -222,11 +221,11 @@ public class MouseHandler : MonoBehaviour
             };
 
             gol.scoreKeeper.saveScore(latestScore);
-
+            
         }
     }
 
-    private Vector3Int GetCellPosition(Tilemap tilemap)
+    private Vector3Int getCellPosition(Tilemap tilemap)
     {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));

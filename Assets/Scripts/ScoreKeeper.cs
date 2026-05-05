@@ -1,10 +1,13 @@
-using System.IO;
 using Newtonsoft.Json;
+using System.IO;
+using UnityEngine;
 //Newtonsoft.Json encounters less compatiblity issues with Unity than System.Text.Json.
 
 public class ScoreKeeper
 {
     private string path;
+
+    
 
     public ScoreKeeper(string dataPath)
     {
@@ -25,7 +28,7 @@ public class ScoreKeeper
         File.AppendAllText(path, json + "\n");
     }
 
-    public LatestScore[] loadScores()
+    public LatestScore[] loadScores(int numberOfHighScores)
     {
         if (!File.Exists(path)) return new LatestScore[0];
 
@@ -35,9 +38,13 @@ public class ScoreKeeper
         for (int i = 0; i < lines.Length; i++)
         {
             scores[i] = JsonConvert.DeserializeObject<LatestScore>(lines[i]);
+
         }
 
-        return scores;
+        System.Array.Sort(scores, (a, b) => a.time.CompareTo(b.time));
+
+        numberOfHighScores = Mathf.Min(numberOfHighScores, scores.Length);
+        return scores[0..numberOfHighScores];
     }
 
     public void clearScores()
