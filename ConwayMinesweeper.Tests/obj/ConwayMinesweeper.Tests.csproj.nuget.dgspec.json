@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Unity\\Projects\\ConwayMinesweeper.Tests\\ConwayMinesweeper.Tests.csproj": {}
+    "E:\\Unity\\Projects\\Game of Life\\ConwayMinesweeper.Tests\\ConwayMinesweeper.Tests.csproj": {}
   },
   "projects": {
-    "E:\\Unity\\Projects\\ConwayMinesweeper.Tests\\ConwayMinesweeper.Tests.csproj": {
+    "E:\\Unity\\Projects\\Game of Life\\ConwayMinesweeper.Tests\\ConwayMinesweeper.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Unity\\Projects\\ConwayMinesweeper.Tests\\ConwayMinesweeper.Tests.csproj",
+        "projectUniqueName": "E:\\Unity\\Projects\\Game of Life\\ConwayMinesweeper.Tests\\ConwayMinesweeper.Tests.csproj",
         "projectName": "ConwayMinesweeper.Tests",
-        "projectPath": "E:\\Unity\\Projects\\ConwayMinesweeper.Tests\\ConwayMinesweeper.Tests.csproj",
+        "projectPath": "E:\\Unity\\Projects\\Game of Life\\ConwayMinesweeper.Tests\\ConwayMinesweeper.Tests.csproj",
         "packagesPath": "C:\\Users\\Vivien\\.nuget\\packages\\",
-        "outputPath": "E:\\Unity\\Projects\\ConwayMinesweeper.Tests\\obj\\",
+        "outputPath": "E:\\Unity\\Projects\\Game of Life\\ConwayMinesweeper.Tests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
