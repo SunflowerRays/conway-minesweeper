@@ -42,7 +42,7 @@ public class GoL : MonoBehaviour
         grid = new Grid(centre, gridWidth, gridHeight);
         mineDetector = new MineDetector(grid, liveRegistry);
         mineHider = new MineHider(grid, liveRegistry);
-        generator = new Generator(this, liveRegistry, centre, mineDetector);
+        generator = new Generator(grid, liveRegistry, centre, mineDetector);
         scoreKeeper = new ScoreKeeper(Application.persistentDataPath);
     }
 

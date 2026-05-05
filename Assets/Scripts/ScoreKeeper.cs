@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
+using System;
 using System.IO;
-using UnityEngine;
+
 //Newtonsoft.Json encounters less compatiblity issues with Unity than System.Text.Json.
 
 public class ScoreKeeper
@@ -43,7 +44,7 @@ public class ScoreKeeper
 
         System.Array.Sort(scores, (a, b) => a.time.CompareTo(b.time));
 
-        numberOfHighScores = Mathf.Min(numberOfHighScores, scores.Length);
+        numberOfHighScores = Math.Min(numberOfHighScores, scores.Length);
         return scores[0..numberOfHighScores];
     }
 

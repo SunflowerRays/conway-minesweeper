@@ -10,16 +10,16 @@ public class Generator
     private HashSet<(int x, int y)> cellsToCheck;
     private (int x, int y) centre;
 
-    private GoL gol;
+    private Grid grid;
     private MineDetector mineDetector;
     
     public event Action onGeneration;
 
 
-    public Generator(GoL gol, LiveRegistry liveRegistry, (int x, int y) centre, MineDetector mineDetector = null)
+    public Generator(Grid grid, LiveRegistry liveRegistry, (int x, int y) centre, MineDetector mineDetector = null)
     {
         //required
-        this.gol = gol;
+        this.grid = grid;
         this.liveRegistry = liveRegistry;
         this.centre = centre;
 
@@ -70,7 +70,7 @@ public class Generator
 
                 liveRegistry.newAliveCells.Remove((x, y));
             }
-            else if (x < centre.x - gol.grid.gridWidth / 2 || x > centre.x + gol.grid.gridWidth / 2 || y < centre.y - gol.grid.gridHeight / 2 || y > centre.y + gol.grid.gridHeight / 2)
+            else if (x < centre.x - grid.gridWidth / 2 || x > centre.x + grid.gridWidth / 2 || y < centre.y - grid.gridHeight / 2 || y > centre.y + grid.gridHeight / 2)
             {
 
                 liveRegistry.newAliveCells.Remove((x, y));
@@ -94,10 +94,10 @@ public class Generator
 
     private bool IsInsideBounds(int x, int y)
     {
-        return x > centre.x - gol.grid.gridWidth / 2 &&
-               x < centre.x + gol.grid.gridWidth / 2 &&
-               y > centre.y - gol.grid.gridHeight / 2 &&
-               y < centre.y + gol.grid.gridHeight / 2;
+        return x > centre.x - grid.gridWidth / 2 &&
+               x < centre.x + grid.gridWidth / 2 &&
+               y > centre.y - grid.gridHeight / 2 &&
+               y < centre.y + grid.gridHeight / 2;
     }
 
 
