@@ -1,21 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
-using static MouseHandler;
-using static UnityEngine.InputSystem.HID.HID;
+
 
 public class GoL : MonoBehaviour
 {
     [SerializeField] public Tilemap currentState;
-    [SerializeField] private Tilemap nextState;
     [SerializeField] public Tile aliveTile;
     [SerializeField] private Tile deadTile;
-    [SerializeField] public float freqInterval = 0.20f;
-    [SerializeField] private int gridWidth = 12;
-    [SerializeField] private int gridHeight = 12;
+    [SerializeField] public float freqInterval;
+    [SerializeField] private int gridWidth;
+    [SerializeField] private int gridHeight;
 
     public (int x, int y) centre;
     public Grid grid;
@@ -42,13 +38,13 @@ public class GoL : MonoBehaviour
         grid = new Grid(centre, gridWidth, gridHeight);
         mineDetector = new MineDetector(grid, liveRegistry);
         mineHider = new MineHider(grid, liveRegistry);
-        generator = new Generator(grid, liveRegistry, centre, mineDetector);
+        generator = new Generator(grid, liveRegistry, centre);
         scoreKeeper = new ScoreKeeper(Application.persistentDataPath);
     }
 
     public void Start()
     {
-        liveRegistry.population = liveRegistry.newAliveCells.Count;
+        liveRegistry.population = liveRegistry.aliveCells.Count;
     }
 
     void Update()
@@ -57,14 +53,12 @@ public class GoL : MonoBehaviour
         {
             if (!isGeneratorRunning)
             {
-                patternManager.Pattern2AliveCells();
                 mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
                 StartCoroutine(Simulate());
             }
             else
             {
                 StopGenerator();
-                mineHider.coverMines(grid);
                 mouseHandler.SetMode(MouseHandler.GameMode.Minesweeper);
             }
         }
@@ -80,12 +74,10 @@ public class GoL : MonoBehaviour
     {
         isGeneratorRunning = true;
 
-        yield return new WaitForSeconds(freqInterval);
-
         while (isGeneratorRunning)
         {
             generator.UpdateState();
-            liveRegistry.population = liveRegistry.newAliveCells.Count;
+            liveRegistry.population = liveRegistry.aliveCells.Count;
             iterations++;
             time += freqInterval;
             yield return new WaitForSeconds(freqInterval);

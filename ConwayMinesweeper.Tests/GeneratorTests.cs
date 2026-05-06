@@ -16,15 +16,15 @@ namespace ConwayMinesweeper.Tests
             var generator = new Generator(grid, liveRegistry, (0, 0));
 
             // Three live cells around (0, 0)
-            liveRegistry.newAliveCells.Add((1, 0));
-            liveRegistry.newAliveCells.Add((0, 1));
-            liveRegistry.newAliveCells.Add((1, 1));
+            liveRegistry.aliveCells.Add((1, 0));
+            liveRegistry.aliveCells.Add((0, 1));
+            liveRegistry.aliveCells.Add((1, 1));
 
             // Act
             generator.UpdateState();
 
             // Assert
-            Assert.That(liveRegistry.newAliveCells.Contains((0, 0)), Is.EqualTo(true));
+            Assert.That(liveRegistry.aliveCells.Contains((0, 0)), Is.EqualTo(true));
         }
     }
 }

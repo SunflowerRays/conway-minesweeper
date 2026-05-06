@@ -9,7 +9,7 @@ public class MineHider
     public HashSet<(int x, int y)> topCells { get; set; }
 
     //To keep this class a pure C# class with no Unity elements, so it remains testable
-    public event Action onDetectionComplete;
+    public event Action onCoverageComplete;
     public event Action onGameStart;
     public event Action onWin;
     public MineHider(Grid grid, LiveRegistry liveRegistry)
@@ -23,35 +23,24 @@ public class MineHider
     public void coverMines(Grid grid)
     {
         topCells.Clear();
-
         foreach (var (i, j) in grid.GetAllCells())
         {
-
             topCells.Add((i, j));
-
         }
-
-
-        onDetectionComplete?.Invoke();
+        onCoverageComplete?.Invoke();
         onGameStart?.Invoke();
-
     }
 
     public Boolean reveal(int x, int y)
     {
-
-
         if (topCells.Remove((x, y)))
         {
-            if (topCells.Count == liveRegistry.newAliveCells.Count)
+            if (topCells.Count == liveRegistry.aliveCells.Count)
             {
                 onWin?.Invoke();
             }
-
             return true;
         }
-
         return false;
     }
-
 }

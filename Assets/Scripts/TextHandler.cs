@@ -34,7 +34,6 @@ public class TextHandler : MonoBehaviour
     public void showHighScores()
     {
         ScoreKeeper.LatestScore[] scores = gol.scoreKeeper.loadScores(gol.numberOfHighScores);
-
         string display = "";
         for (int i = 0; i < scores.Length; i++)
         {
@@ -44,23 +43,14 @@ public class TextHandler : MonoBehaviour
         highScorePanel.SetActive(true);
     }
 
-
-
-
-    void DisplayTime(float timeToDisplay)
-    {
-        float minutes = Mathf.FloorToInt(timeToDisplay / 60);
-        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
-        timerText.text = string.Format("Time: {0:00}:{1:00}", minutes, seconds);
-    }
-
     void Update()
     {
         if (isRunning)
         {
             currentTime += Time.deltaTime;
-            DisplayTime(currentTime);
-
+            float minutes = Mathf.FloorToInt(currentTime / 60);
+            float seconds = Mathf.FloorToInt(currentTime % 60);
+            timerText.text = string.Format("Time: {0:00}:{1:00}", minutes, seconds);
         }
         mineCountText.text = string.Format("Mines: {0}", mineCount);
     }

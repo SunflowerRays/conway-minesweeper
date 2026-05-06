@@ -35,7 +35,6 @@ public class MineDetector
 
         foreach (var (i, j) in grid.GetAllCells())
         {
-
             var (x, y, mines) = detector(i, j);
             CellData cell = new CellData() { x = x, y = y, mines = mines };
             cellsData.Add(cell);
@@ -52,7 +51,7 @@ public class MineDetector
 
         int mines = 0;
 
-        if (liveRegistry.newAliveCells.Contains((i, j)))
+        if (liveRegistry.aliveCells.Contains((i, j)))
         {
             mines = -1;
         }
@@ -63,7 +62,7 @@ public class MineDetector
                 for (int y = -1; y <= 1; y++)
                 {
                     if (x == 0 && y == 0) continue;
-                    if (liveRegistry.newAliveCells.Contains((i + x, j + y)))
+                    if (liveRegistry.aliveCells.Contains((i + x, j + y)))
                     {
                         mines++;
                     }
