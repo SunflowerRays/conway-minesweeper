@@ -68,7 +68,7 @@ public class Generator
             //cells in stable arrangments remain in aliveCells but do not require additional statements for that.
 
         }
-
+        liveRegistry.population = liveRegistry.aliveCells.Count;
         onGeneration?.Invoke();
     }
 
@@ -76,10 +76,12 @@ public class Generator
 
     private bool IsInsideBounds(int x, int y)
     {
-        return x > centre.x - grid.gridWidth / 2 &&
-               x < centre.x + grid.gridWidth / 2 &&
-               y > centre.y - grid.gridHeight / 2 &&
-               y < centre.y + grid.gridHeight / 2;
+        if (x < grid.centre.x - grid.gridWidth / 2 ||
+            x >= grid.centre.x + grid.gridWidth / 2 ||
+            y < grid.centre.y - grid.gridHeight / 2 ||
+            y >= grid.centre.y + grid.gridHeight / 2) return false;
+
+        return true;
     }
 
 

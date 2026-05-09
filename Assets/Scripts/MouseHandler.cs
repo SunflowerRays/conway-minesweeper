@@ -20,8 +20,8 @@ public class MouseHandler : MonoBehaviour
     private Tilemap currentState;
 
     public enum GameMode { PatternEdit, Simulating, Minesweeper, GameOver }
-    private GameMode mode = GameMode.PatternEdit;
-    private bool isGameOver;
+    public GameMode mode = GameMode.PatternEdit;
+    public bool isGameOver;
     private (float time, int points, bool levelCleared, string playerName) score;
     [SerializeField] private bool cascadeRevealEnabled;
 
@@ -38,7 +38,6 @@ public class MouseHandler : MonoBehaviour
             mode = GameMode.GameOver;
         };
 
-
     }
 
     public void SetMode(GameMode newMode)
@@ -54,6 +53,13 @@ public class MouseHandler : MonoBehaviour
         {
             gol.mineHider.coverMines(gol.grid);
             score = (0, 0, false, null);
+
+            int i;
+            for (i = 0; i < gol.patternManager.minesPerPattern.Count; i++)
+            {
+                Debug.Log("generation: " + i + " " + gol.patternManager.minesPerPattern[i]);
+            }
+            Debug.Log("aliveCells count: " + gol.liveRegistry.aliveCells.Count);
             gol.mineDetector.detectorOverAllCells();
         }
         mode = newMode;

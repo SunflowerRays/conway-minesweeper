@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+
 
 public class MineHider
 {
@@ -27,6 +29,7 @@ public class MineHider
         {
             topCells.Add((i, j));
         }
+
         onCoverageComplete?.Invoke();
         onGameStart?.Invoke();
     }

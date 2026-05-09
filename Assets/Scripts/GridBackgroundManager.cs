@@ -7,6 +7,9 @@ public class GridBackgroundManager : MonoBehaviour
 
     void Start()
     {
-        background.transform.localScale = new Vector3(gol.grid.gridWidth + 1, gol.grid.gridHeight + 1, 1);
+        float width = gol.grid.gridWidth;
+        float height = gol.grid.gridHeight;
+        background.transform.localPosition = new Vector3(0, 0, 0);
+        background.transform.localScale = new Vector3(width, height, 1);
     }
 }

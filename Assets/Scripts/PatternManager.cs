@@ -10,11 +10,16 @@ public class PatternManager
     public LiveRegistry liveRegistry;
     public event Action onAddCell;
     public event Action onSubtractCell;
+    public List<HashSet<(int x, int y)>> patterns { get; set; }
+    public List <int> minesPerPattern;
 
     public PatternManager(LiveRegistry liveRegistry)
     {
         this.liveRegistry = liveRegistry;
+        patterns = new List<HashSet<(int x, int y)>>();
+        minesPerPattern = new List<int>();
     }
+
     public bool ToggleCell(int x, int y)
     {
         if (liveRegistry.aliveCells.Contains((x, y)))

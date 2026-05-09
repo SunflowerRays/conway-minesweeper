@@ -21,10 +21,6 @@ public class MineDetector
         this.grid = grid;
         this.liveRegistry = liveRegistry;
         cellsData = new List<CellData>();
-
-        detectorOverAllCells();
-
-
     }
 
 

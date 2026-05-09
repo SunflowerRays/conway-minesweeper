@@ -71,6 +71,17 @@ public class HashSet2TileMap : MonoBehaviour
         }
     }
 
+
+    public void clearMinefield()
+    {
+        clear(minefield);
+    }
+
+    public void clearGreyfield()
+    {
+        clear(greyfield);
+    }
+
     public void clear(Tilemap tileMap)
     {
         tileMap.ClearAllTiles();
