@@ -11,7 +11,7 @@ public class PatternManager
     public event Action onAddCell;
     public event Action onSubtractCell;
     public List<HashSet<(int x, int y)>> patterns { get; set; }
-    public List <int> minesPerPattern;
+    public List<int> minesPerPattern;
 
     public PatternManager(LiveRegistry liveRegistry)
     {

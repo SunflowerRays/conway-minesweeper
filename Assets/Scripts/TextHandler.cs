@@ -28,7 +28,6 @@ public class TextHandler : MonoBehaviour
         gol.mineHider.onGameStart += () => isMinesweeperRunning = true;
         gol.patternManager.onAddCell += () => mineCount++;
         gol.patternManager.onSubtractCell += () => mineCount--;
-        
     }
 
     public void Stop()
@@ -51,13 +50,13 @@ public class TextHandler : MonoBehaviour
 
     void Update()
     {
-        
-        
+
+
         if (!isMinesweeperRunning)
         {
-            if (isGeneratorFinished) 
+            if (isGeneratorFinished)
             {
-                int index = (int)generationSlider.value-1;
+                int index = (int)generationSlider.value - 1;
                 if (index >= 0 && index < gol.patternManager.minesPerPattern.Count)
                 {
                     mineCount = gol.patternManager.minesPerPattern[index];
@@ -72,13 +71,13 @@ public class TextHandler : MonoBehaviour
             float minutes = Mathf.FloorToInt(currentTime / 60);
             float seconds = Mathf.FloorToInt(currentTime % 60);
             timerText.text = string.Format("Time: {0:00}:{1:00}", minutes, seconds);
-        } 
+        }
         else
         {
             timerText.text = string.Format("Time: {0:00}:{1:00}", 0, 0);
         }
         mineCountText.text = string.Format("Mines: {0}", mineCount);
         GeneratorCountText.text = string.Format("Generation: {0}", generationCount);
-        
+
     }
 }

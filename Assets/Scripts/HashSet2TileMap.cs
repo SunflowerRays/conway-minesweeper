@@ -16,7 +16,7 @@ using UnityEngine.Tilemaps;
 
 public class HashSet2TileMap : MonoBehaviour
 {
-    
+
     [SerializeField] private Tile aliveTile;
     [SerializeField] private Tile bomb;
     [SerializeField] private Tile explosion;

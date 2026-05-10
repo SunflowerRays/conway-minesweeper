@@ -30,11 +30,11 @@ public class GoL : MonoBehaviour
 
     // Score Display Settings
     [SerializeField] public int numberOfHighScores;
-    
+
     // Generation Settings
     private int minGenerations = 1;
     [SerializeField] private int maxGenerations;
-    
+
 
     private void Awake()
     {
@@ -57,13 +57,13 @@ public class GoL : MonoBehaviour
     public void OnConfirmButtonPressed()
     {
         if (mouseHandler.mode == MouseHandler.GameMode.PatternEdit)
-        {    
+        {
             mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
             StartCoroutine(Simulate());
         }
         else if (mouseHandler.mode == MouseHandler.GameMode.Simulating)
         {
-            int selectedIndex = (int)generationSlider.value-1;
+            int selectedIndex = (int)generationSlider.value - 1;
             liveRegistry.aliveCells = new HashSet<(int x, int y)>(patternManager.patterns[selectedIndex]);
             liveRegistry.population = liveRegistry.aliveCells.Count;
 
@@ -89,7 +89,7 @@ public class GoL : MonoBehaviour
         }
         else if (mouseHandler.mode == MouseHandler.GameMode.GameOver || mouseHandler.mode == MouseHandler.GameMode.Minesweeper)
         {
-            
+
             mouseHandler.isGameOver = false;
             liveRegistry.aliveCells.Clear();
             liveRegistry.population = 0;
@@ -123,7 +123,7 @@ public class GoL : MonoBehaviour
 
 
         isGeneratorRunning = true;
-        
+
         ConfirmButton.interactable = false;
 
 
