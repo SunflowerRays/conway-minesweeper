@@ -22,6 +22,8 @@ public class TextHandler : MonoBehaviour
     public int mineCount = 0;
     public int generationCount = 0;
 
+
+
     void Start()
     {
         mineCount = gol.liveRegistry.population;
@@ -36,6 +38,15 @@ public class TextHandler : MonoBehaviour
         isMinesweeperRunning = false;
     }
 
+
+    /// <summary>
+    /// Displays the list of high scores in the user interface, showing completion times, and win or loss
+    /// status.
+    /// </summary>
+    /// <remarks>This method retrieves the most recent high scores and updates the high score panel to make it
+    /// visible to the user. The display includes the rank, time in seconds, and whether the level was
+    /// cleared. The method does not return a value and is typically called after a game session or when the user
+    /// requests to view high scores.</remarks>
     public void showHighScores()
     {
         ScoreKeeper.LatestScore[] scores = gol.scoreKeeper.loadScores(gol.numberOfHighScores);
