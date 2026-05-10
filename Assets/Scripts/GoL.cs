@@ -1,21 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
-using static MouseHandler;
-using static UnityEngine.InputSystem.HID.HID;
+
 
 public class GoL : MonoBehaviour
 {
     [SerializeField] public Tilemap currentState;
-    [SerializeField] private Tilemap nextState;
     [SerializeField] public Tile aliveTile;
-    [SerializeField] private Tile deadTile;
-    [SerializeField] public float freqInterval = 0.20f;
-    [SerializeField] private int gridWidth = 12;
-    [SerializeField] private int gridHeight = 12;
+    [SerializeField] public float freqInterval;
+    [SerializeField] private int gridWidth;
+    [SerializeField] private int gridHeight;
+    [SerializeField] private UnityEngine.UI.Slider generationSlider;
+    [SerializeField] private UnityEngine.UI.Button ConfirmButton;
 
     public (int x, int y) centre;
     public Grid grid;
@@ -30,10 +28,13 @@ public class GoL : MonoBehaviour
     [SerializeField] public MouseHandler mouseHandler;
     [SerializeField] public TextHandler textHandler;
 
-    public int numberOfHighScores = 3;
+    // Score Display Settings
+    [SerializeField] public int numberOfHighScores;
 
-    public int iterations { get; internal set; }
-    public float time { get; internal set; }
+    // Generation Settings
+    private int minGenerations = 1;
+    [SerializeField] private int maxGenerations;
+
 
     private void Awake()
     {
@@ -42,31 +43,73 @@ public class GoL : MonoBehaviour
         grid = new Grid(centre, gridWidth, gridHeight);
         mineDetector = new MineDetector(grid, liveRegistry);
         mineHider = new MineHider(grid, liveRegistry);
-        generator = new Generator(grid, liveRegistry, centre, mineDetector);
+        generator = new Generator(grid, liveRegistry, centre);
         scoreKeeper = new ScoreKeeper(Application.persistentDataPath);
     }
 
     public void Start()
     {
-        liveRegistry.population = liveRegistry.newAliveCells.Count;
+        liveRegistry.population = liveRegistry.aliveCells.Count;
+        generationSlider.minValue = minGenerations;
+        generationSlider.maxValue = maxGenerations;
     }
 
-    void Update()
+    public void OnConfirmButtonPressed()
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (mouseHandler.mode == MouseHandler.GameMode.PatternEdit)
         {
-            if (!isGeneratorRunning)
-            {
-                patternManager.Pattern2AliveCells();
-                mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
-                StartCoroutine(Simulate());
-            }
-            else
-            {
-                StopGenerator();
-                mineHider.coverMines(grid);
-                mouseHandler.SetMode(MouseHandler.GameMode.Minesweeper);
-            }
+            mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
+            StartCoroutine(Simulate());
+        }
+        else if (mouseHandler.mode == MouseHandler.GameMode.Simulating)
+        {
+            int selectedIndex = (int)generationSlider.value - 1;
+            liveRegistry.aliveCells = new HashSet<(int x, int y)>(patternManager.patterns[selectedIndex]);
+            liveRegistry.population = liveRegistry.aliveCells.Count;
+
+
+            //debugging
+
+            //Debug.Log("Selected index: " + selectedIndex);
+            //Debug.Log("minesPerPattern count: " + patternManager.minesPerPattern.Count);
+            //Debug.Log("patterns count: " + patternManager.patterns.Count);
+            //Debug.Log("Selected mine count: " + patternManager.minesPerPattern[selectedIndex]);
+
+
+
+            StopGenerator();
+
+            mouseHandler.SetMode(MouseHandler.GameMode.Minesweeper);
+
+            Debug.Log($"Grid: width={grid.gridWidth}, height={grid.gridHeight}, centre={grid.centre.x},{grid.centre.y}");
+            Debug.Log($"topCells count: {mineHider.topCells.Count}");
+
+            ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Restart Game";
+            ConfirmButton.image.color = new Color(0.29f, 0f, 0.51f);
+        }
+        else if (mouseHandler.mode == MouseHandler.GameMode.GameOver || mouseHandler.mode == MouseHandler.GameMode.Minesweeper)
+        {
+
+            mouseHandler.isGameOver = false;
+            liveRegistry.aliveCells.Clear();
+            liveRegistry.population = 0;
+            patternManager.patterns.Clear();
+            patternManager.minesPerPattern.Clear();
+            currentState.ClearAllTiles();
+            HashSet2TileMap.clearMinefield();
+            HashSet2TileMap.clearGreyfield();
+            ConfirmButton.interactable = true;
+            textHandler.highScorePanel.SetActive(false);
+            mouseHandler.SetMode(MouseHandler.GameMode.PatternEdit);
+            textHandler.currentTime = 0;
+
+
+            // Change text
+            ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Confirm Pattern";
+
+            // Change colour
+            ConfirmButton.image.color = Color.white;
+
         }
     }
 
@@ -75,23 +118,39 @@ public class GoL : MonoBehaviour
 
     }
 
-
     private IEnumerator Simulate()
     {
+
+
         isGeneratorRunning = true;
 
-        yield return new WaitForSeconds(freqInterval);
+        ConfirmButton.interactable = false;
 
-        while (isGeneratorRunning)
+
+        for (int i = minGenerations; i <= maxGenerations; i++)
         {
+            HashSet<(int x, int y)> previousCells = new HashSet<(int x, int y)>(liveRegistry.aliveCells);
             generator.UpdateState();
-            liveRegistry.population = liveRegistry.newAliveCells.Count;
-            iterations++;
-            time += freqInterval;
+            liveRegistry.population = liveRegistry.aliveCells.Count;
+            patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
+            patternManager.minesPerPattern.Add(liveRegistry.population);
+            if (liveRegistry.aliveCells.Count == 0) break;
+            if (liveRegistry.aliveCells.SetEquals(previousCells)) break;
             yield return new WaitForSeconds(freqInterval);
         }
-    }
 
+
+        ConfirmButton.interactable = true;
+
+        // Change text
+        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Start Minesweeper";
+
+        // Change colour
+        ConfirmButton.image.color = Color.green;
+
+        textHandler.isGeneratorFinished = true;
+
+    }
     public void StopGenerator()
     {
         isGeneratorRunning = false;

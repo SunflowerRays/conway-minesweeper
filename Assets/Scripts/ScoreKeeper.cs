@@ -32,18 +32,13 @@ public class ScoreKeeper
     public LatestScore[] loadScores(int numberOfHighScores)
     {
         if (!File.Exists(path)) return new LatestScore[0];
-
         string[] lines = File.ReadAllLines(path);
         LatestScore[] scores = new LatestScore[lines.Length];
-
         for (int i = 0; i < lines.Length; i++)
         {
             scores[i] = JsonConvert.DeserializeObject<LatestScore>(lines[i]);
-
         }
-
         System.Array.Sort(scores, (a, b) => a.time.CompareTo(b.time));
-
         numberOfHighScores = Math.Min(numberOfHighScores, scores.Length);
         return scores[0..numberOfHighScores];
     }

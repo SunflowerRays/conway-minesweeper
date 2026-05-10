@@ -16,7 +16,7 @@ public class Grid
     /// <param name="centre">The coordinates representing the center of the grid.</param>
     /// <param name="gridHeight">The number of rows in the grid. Must be a positive integer.</param>
     /// <param name="gridWidth">The number of columns in the grid. Must be a positive integer.</param>
-    public Grid((int x, int y) centre, int gridHeight, int gridWidth)
+    public Grid((int x, int y) centre, int gridWidth, int gridHeight)
     {
         //Consider Arithmetic Overflow Check Operators    
 
@@ -29,9 +29,9 @@ public class Grid
 
     public IEnumerable<(int x, int y)> GetAllCells()
     {
-        for (int i = (centre.x - (gridWidth / 2)); i <= (centre.x + (gridWidth / 2)); ++i)
+        for (int i = centre.x - gridWidth / 2; i < centre.x + gridWidth / 2; ++i)
         {
-            for (int j = (centre.y - (gridHeight / 2)); j <= (centre.y + (gridHeight / 2)); ++j)
+            for (int j = centre.y - gridHeight / 2; j < centre.y + gridHeight / 2; ++j)
             {
                 yield return (i, j);
             }

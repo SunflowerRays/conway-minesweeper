@@ -1,20 +1,22 @@
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Runtime.InteropServices;
+
 #if UNITY_EDITOR
 // editor-only code here
 
 using TreeEditor;
 using UnityEditor.EditorTools;
 #endif
+
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+
 
 
 public class HashSet2TileMap : MonoBehaviour
 {
-    private HashSet<(int x, int y)> hashSet { get; set; }
+
     [SerializeField] private Tile aliveTile;
     [SerializeField] private Tile bomb;
     [SerializeField] private Tile explosion;
@@ -24,9 +26,16 @@ public class HashSet2TileMap : MonoBehaviour
     [SerializeField] private Tilemap minefield;
     [SerializeField] private Tilemap greyfield;
     [SerializeField] private Tilemap currentState;
-    [SerializeField] private Tilemap nextState;
 
 
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        gol.generator.onGeneration += () => mapper(gol.liveRegistry.aliveCells, currentState);
+        gol.mineDetector.onDetectionComplete += () => mapper(gol.mineDetector.cellsData, minefield);
+        gol.mineHider.onCoverageComplete += () => mapper(gol.mineHider.topCells, greyfield);
+    }
 
     /// <summary>
     /// Read HashSet write to tilemap.
@@ -36,7 +45,7 @@ public class HashSet2TileMap : MonoBehaviour
     public void mapper(HashSet<(int x, int y)> hashSet, Tilemap tileMap)
     {
         clear(tileMap);
-        if (tileMap == currentState || tileMap == nextState)
+        if (tileMap == currentState)
         {
             foreach (var cell in hashSet)
             {
@@ -69,9 +78,18 @@ public class HashSet2TileMap : MonoBehaviour
             {
                 tileMap.SetTile(new Vector3Int(CellData.x, CellData.y, 0), nonMineTiles[0]);
             }
-
         }
+    }
 
+
+    public void clearMinefield()
+    {
+        clear(minefield);
+    }
+
+    public void clearGreyfield()
+    {
+        clear(greyfield);
     }
 
     public void clear(Tilemap tileMap)
@@ -109,17 +127,7 @@ public class HashSet2TileMap : MonoBehaviour
 
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        gol.generator.onGeneration += () => mapper(gol.liveRegistry.newAliveCells, currentState);
-        gol.mineDetector.onDetectionComplete += () => mapper(gol.mineDetector.cellsData, minefield);
-        gol.mineHider.onDetectionComplete += () => mapper(gol.mineHider.topCells, greyfield);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
 
-    }
+
 }

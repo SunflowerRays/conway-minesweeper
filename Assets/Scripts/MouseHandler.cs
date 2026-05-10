@@ -20,10 +20,10 @@ public class MouseHandler : MonoBehaviour
     private Tilemap currentState;
 
     public enum GameMode { PatternEdit, Simulating, Minesweeper, GameOver }
-    private bool isGameOver;
-    private GameMode mode = GameMode.PatternEdit;
+    public GameMode mode = GameMode.PatternEdit;
+    public bool isGameOver;
     private (float time, int points, bool levelCleared, string playerName) score;
-    private bool cascadeRevealEnabled = true;
+    [SerializeField] private bool cascadeRevealEnabled;
 
     void Start()
     {
@@ -38,7 +38,6 @@ public class MouseHandler : MonoBehaviour
             mode = GameMode.GameOver;
         };
 
-
     }
 
     public void SetMode(GameMode newMode)
@@ -52,7 +51,16 @@ public class MouseHandler : MonoBehaviour
 
         if (newMode == GameMode.Minesweeper)
         {
+            gol.mineHider.coverMines(gol.grid);
             score = (0, 0, false, null);
+
+            int i;
+            for (i = 0; i < gol.patternManager.minesPerPattern.Count; i++)
+            {
+                Debug.Log("generation: " + i + " " + gol.patternManager.minesPerPattern[i]);
+            }
+            Debug.Log("aliveCells count: " + gol.liveRegistry.aliveCells.Count);
+            gol.mineDetector.detectorOverAllCells();
         }
         mode = newMode;
     }
@@ -61,9 +69,8 @@ public class MouseHandler : MonoBehaviour
 
     void Update()
     {
-
         if (mode == GameMode.PatternEdit) playPatternEditor();
-        if (mode == GameMode.Simulating) playSimulator();
+        // Simulating is handled by the Generator class.
         if (mode == GameMode.Minesweeper) playMineSweeper();
         if (mode == GameMode.GameOver) playGameOver();
     }
@@ -98,20 +105,6 @@ public class MouseHandler : MonoBehaviour
         }
     }
 
-
-    private void playSimulator()
-    {
-        //recieve pattern
-
-        //start simulation
-
-        //pause simulation or pick generation from a sliding input
-
-        //confirm generation and start playMineSweeper
-
-    }
-
-
     // https://learn.microsoft.com/en-us/dotnet/api/system.collections.queue?view=net-10.0
     private void playMineSweeper()
     {
@@ -144,8 +137,6 @@ public class MouseHandler : MonoBehaviour
                         greyfield.ClearAllTiles();
                         gol.mineHider.topCells.Clear();
                         minefield.SetTile(cellPosition, explosion);
-                        score.playerName = "Mac Par Null";
-                        score.points = 0;
                         score.levelCleared = false;
                         mode = GameMode.GameOver;
                     }
@@ -156,20 +147,15 @@ public class MouseHandler : MonoBehaviour
                             for (int cy = -1; cy <= 1; cy++)
                             {
                                 if (cx == 0 && cy == 0) continue;
-
                                 int dx = bx + cx;
-
                                 int dy = by + cy;
-
                                 if (gol.mineHider.reveal(dx, dy))
                                 {
                                     greyfield.SetTile(new Vector3Int(dx, dy, 0), null);
                                     cellsToCheck.Enqueue((dx, dy));
                                 }
-
                             }
                         }
-
                     }
 
                 }
@@ -177,10 +163,7 @@ public class MouseHandler : MonoBehaviour
         }
         if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            Vector2 mousePosition = Mouse.current.position.ReadValue();
-            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane));
-            Vector3Int cellPosition = greyfield.WorldToCell(worldPosition);
-
+            Vector3Int cellPosition = getCellPosition(greyfield);
             if (gol.mineHider.topCells.Contains((cellPosition.x, cellPosition.y)))
             {
                 if (greyfield.GetTile(cellPosition) == flag)
@@ -192,26 +175,18 @@ public class MouseHandler : MonoBehaviour
                     greyfield.SetTile(cellPosition, flag);
                 }
             }
-
         }
-
     }
 
     private void playGameOver()
     {
-        gol.textHandler.showHighScores();
         if (isGameOver) return;
         isGameOver = true;
-
         gol.textHandler.Stop();
         score.time = gol.textHandler.currentTime;
         if (score.time > 0.00f)
-
-        // add player name input.
-
-
         {
-
+            greyfield.ClearAllTiles();
             ScoreKeeper.LatestScore latestScore = new ScoreKeeper.LatestScore()
             {
                 time = score.time,
@@ -219,12 +194,12 @@ public class MouseHandler : MonoBehaviour
                 levelCleared = score.levelCleared,
                 playerName = score.playerName
             };
-
             gol.scoreKeeper.saveScore(latestScore);
-
         }
+        gol.textHandler.showHighScores();
     }
 
+    //method common to both GoL and Minesweeper
     private Vector3Int getCellPosition(Tilemap tilemap)
     {
         Vector2 mousePosition = Mouse.current.position.ReadValue();
