@@ -9,7 +9,6 @@ public class GoL : MonoBehaviour
 {
     [SerializeField] public Tilemap currentState;
     [SerializeField] public Tile aliveTile;
-    [SerializeField] private Tile deadTile;
     [SerializeField] public float freqInterval;
     [SerializeField] private int gridWidth;
     [SerializeField] private int gridHeight;
@@ -29,7 +28,10 @@ public class GoL : MonoBehaviour
     [SerializeField] public MouseHandler mouseHandler;
     [SerializeField] public TextHandler textHandler;
 
+    // Score Display Settings
     [SerializeField] public int numberOfHighScores;
+    
+    // Generation Settings
     private int minGenerations = 1;
     [SerializeField] private int maxGenerations;
     
@@ -50,11 +52,6 @@ public class GoL : MonoBehaviour
         liveRegistry.population = liveRegistry.aliveCells.Count;
         generationSlider.minValue = minGenerations;
         generationSlider.maxValue = maxGenerations;
-    }
-
-    void Update()
-    {
-
     }
 
     public void OnConfirmButtonPressed()
@@ -121,7 +118,6 @@ public class GoL : MonoBehaviour
 
     }
 
-    //Test Changes.
     private IEnumerator Simulate()
     {
 
@@ -155,19 +151,6 @@ public class GoL : MonoBehaviour
         textHandler.isGeneratorFinished = true;
 
     }
-
-    //isGeneratorRunning = true;
-
-    //while (isGeneratorRunning)
-    //{
-    //    generator.UpdateState();
-    //    liveRegistry.population = liveRegistry.aliveCells.Count;
-    //    iterations++;
-    //    time += freqInterval;
-    //    yield return new WaitForSeconds(freqInterval);
-    //}
-
-
     public void StopGenerator()
     {
         isGeneratorRunning = false;

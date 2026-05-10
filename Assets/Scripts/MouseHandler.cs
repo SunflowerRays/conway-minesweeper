@@ -186,6 +186,7 @@ public class MouseHandler : MonoBehaviour
         score.time = gol.textHandler.currentTime;
         if (score.time > 0.00f)
         {
+            greyfield.ClearAllTiles();
             ScoreKeeper.LatestScore latestScore = new ScoreKeeper.LatestScore()
             {
                 time = score.time,

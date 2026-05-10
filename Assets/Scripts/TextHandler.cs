@@ -28,7 +28,7 @@ public class TextHandler : MonoBehaviour
         gol.mineHider.onGameStart += () => isMinesweeperRunning = true;
         gol.patternManager.onAddCell += () => mineCount++;
         gol.patternManager.onSubtractCell += () => mineCount--;
-        //gol.generator.onGeneration += () => mineCount = gol.liveRegistry.population;
+        
     }
 
     public void Stop()
