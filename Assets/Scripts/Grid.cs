@@ -27,6 +27,14 @@ public class Grid
 
     }
 
+    /// <summary>
+    /// Returns an enumerable collection of all cell coordinates within the grid, relative to the current center
+    /// position.
+    /// </summary>
+    /// <remarks>The enumeration covers all cells in the rectangular area defined by the grid's width and
+    /// height, centered at the specified center point. The order of the returned coordinates is row by row, starting
+    /// from the top-left corner.</remarks>
+    /// <returns>An enumerable sequence of tuples, where each tuple contains the x and y coordinates of a cell within the grid.</returns>
     public IEnumerable<(int x, int y)> GetAllCells()
     {
         for (int i = centre.x - gridWidth / 2; i < centre.x + gridWidth / 2; ++i)
