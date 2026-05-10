@@ -26,7 +26,7 @@ jobs:
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: Library-
       - name: Run tests
-        run: dotnet test
+        run: dotnet test ConwayMinesweeper.Tests/ConwayMinesweeper.Tests.csproj
   security:
     name: Security Scan
     runs-on: ubuntu-latest
