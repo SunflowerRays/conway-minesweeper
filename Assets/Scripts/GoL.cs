@@ -36,6 +36,13 @@ public class GoL : MonoBehaviour
     [SerializeField] private int maxGenerations;
 
 
+
+    /// <summary>
+    /// Initializes component dependencies and prepares the object for use. Called by Unity when the script instance is
+    /// being loaded.
+    /// </summary>
+    /// <remarks>This method is invoked automatically by Unity before any Start methods. It sets up required
+    /// services and managers to ensure the component operates correctly during its lifecycle.</remarks>
     private void Awake()
     {
         liveRegistry = new LiveRegistry();
@@ -47,6 +54,13 @@ public class GoL : MonoBehaviour
         scoreKeeper = new ScoreKeeper(Application.persistentDataPath);
     }
 
+
+    /// <summary>
+    /// Initializes the simulation by updating the population count and configuring the generation slider to the allowed
+    /// range.
+    /// </summary>
+    /// <remarks>Call this method before starting the simulation to ensure that the population and generation
+    /// controls are set to their initial states.</remarks>
     public void Start()
     {
         liveRegistry.population = liveRegistry.aliveCells.Count;
@@ -54,6 +68,13 @@ public class GoL : MonoBehaviour
         generationSlider.maxValue = maxGenerations;
     }
 
+
+    /// <summary>
+    /// Handles the logic for the confirm button based on the current game mode.
+    /// </summary>
+    /// <remarks>This method transitions the game between pattern editing, simulation, and gameplay modes when
+    /// the confirm button is pressed. It updates the game state, UI elements, and relevant data structures according to
+    /// the current mode. Call this method in response to user interaction with the confirm button.</remarks>
     public void OnConfirmButtonPressed()
     {
         if (mouseHandler.mode == MouseHandler.GameMode.PatternEdit)
@@ -113,11 +134,14 @@ public class GoL : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
 
-    }
-
+    /// <summary>
+    /// Runs the simulation of cell generations, updating the state and UI as the simulation progresses.
+    /// </summary>
+    /// <remarks>This method disables the confirm button while the simulation is running and re-enables it
+    /// upon completion. The simulation stops if there are no live cells or if the state does not change between
+    /// generations. Intended to be used as a coroutine in Unity.</remarks>
+    /// <returns>An enumerator that advances the simulation through each generation, yielding control between steps.</returns>
     private IEnumerator Simulate()
     {
 
@@ -151,12 +175,23 @@ public class GoL : MonoBehaviour
         textHandler.isGeneratorFinished = true;
 
     }
+
+    /// <summary>
+    /// Stops the generator if it is currently running.
+    /// </summary>
+    /// <remarks>Call this method to halt generator operations. After calling this method, the generator will
+    /// no longer produce output until restarted.</remarks>
     public void StopGenerator()
     {
         isGeneratorRunning = false;
     }
 
-
+    /// <summary>
+    /// Called when the component becomes disabled or inactive.
+    /// </summary>
+    /// <remarks>Use this method to perform any necessary cleanup or to stop ongoing operations when the
+    /// component is disabled. In Unity, this is typically used to halt coroutines or release resources associated with
+    /// the component.</remarks>
     private void OnDisable()
     {
         StopAllCoroutines();
