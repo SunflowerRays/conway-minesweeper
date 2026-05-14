@@ -177,7 +177,7 @@ public class MouseHandler : MonoBehaviour
     {
         if (isGameOver) return;
         isGameOver = true;
-        gol.textHandler.Stop();
+        gol.textHandler.isMinesweeperRunning = false;
         score.time = gol.textHandler.currentTime;
         if (score.time > 0.00f)
         {

@@ -8,7 +8,7 @@ using static ScoreKeeper;
 public class TextHandler : MonoBehaviour
 {
     [SerializeField] private GoL gol;
-    [SerializeField] private TMP_Text timerText;
+    [SerializeField] public TMP_Text timerText;
     [SerializeField] public TMP_Text mineCountText;
     [SerializeField] public TMP_Text GeneratorCountText;
 
@@ -16,8 +16,7 @@ public class TextHandler : MonoBehaviour
     [SerializeField] public GameObject highScorePanel;
 
     // https://gamedevbeginner.com/how-to-make-countdown-timer-in-unity-minutes-seconds/
-    private bool isMinesweeperRunning;
-    public bool isGeneratorFinished;
+    public bool isMinesweeperRunning;
     public float currentTime = 0;
     public int mineCount = 0;
     public int generationCount = 0;
@@ -32,12 +31,21 @@ public class TextHandler : MonoBehaviour
         gol.patternManager.onSubtractCell += () => mineCount--;
     }
 
-    public void Stop()
+    public void ResetUI()
     {
-        isGeneratorFinished = false;
-        isMinesweeperRunning = false;
-    }
+        //Enable and Disable UI elements
+        highScorePanel.SetActive(false);
+        timerText.gameObject.SetActive(false);
+        GeneratorCountText.gameObject.SetActive(false);
 
+        //Set UI values
+        currentTime = 0;
+        mineCount = 0;
+
+        //Misc
+        isMinesweeperRunning = false;
+
+    }
 
     /// <summary>
     /// Displays the list of high scores in the user interface, showing completion times, and win or loss
@@ -61,18 +69,18 @@ public class TextHandler : MonoBehaviour
 
     void Update()
     {
-
-
         if (!isMinesweeperRunning)
         {
-            if (isGeneratorFinished)
+            if (!gol.isGeneratorRunning && gol.patternManager.minesPerPattern.Count > 0)
             {
                 int index = (int)gol.generationSlider.value;
-                generationCount = index;
-                mineCount = gol.patternManager.minesPerPattern[index];
+                if (index >= 0 && index < gol.patternManager.minesPerPattern.Count)
+                {
+                    generationCount = index;
+                    mineCount = gol.patternManager.minesPerPattern[index];
+                }
             }
         }
-
         if (isMinesweeperRunning)
         {
             currentTime += Time.deltaTime;
@@ -86,6 +94,5 @@ public class TextHandler : MonoBehaviour
         }
         mineCountText.text = string.Format("Mines: {0}", mineCount);
         GeneratorCountText.text = string.Format("Generation: {0}", generationCount);
-
     }
 }

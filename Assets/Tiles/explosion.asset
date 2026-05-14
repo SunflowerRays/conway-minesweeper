@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: explosion
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
   m_Sprite: {fileID: -8092295105046505211, guid: 31d087899ca34904a96b336ccdb772ae, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_Transform:
     e00: 1
     e01: 0

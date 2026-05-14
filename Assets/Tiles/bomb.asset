@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: bomb
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
   m_Sprite: {fileID: -2613247888821195678, guid: fba732c6d70ddb44397e055c43be1ae2, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
     e01: 0
