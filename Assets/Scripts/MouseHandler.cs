@@ -84,9 +84,9 @@ public class MouseHandler : MonoBehaviour
             int y = cellPosition.y;
 
             if (x < gol.grid.centre.x - gol.grid.gridWidth / 2 ||
-                x > gol.grid.centre.x + gol.grid.gridWidth / 2 ||
+                x >= gol.grid.centre.x + gol.grid.gridWidth / 2 ||
                 y < gol.grid.centre.y - gol.grid.gridHeight / 2 ||
-                y > gol.grid.centre.y + gol.grid.gridHeight / 2) return;
+                y >= gol.grid.centre.y + gol.grid.gridHeight / 2) return;
 
             if (gol.patternManager.ToggleCell(x, y))
             {
