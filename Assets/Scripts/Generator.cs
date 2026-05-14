@@ -31,7 +31,6 @@ public class Generator
         return liveRegistry.aliveCells.Contains((x, y));
     }
 
-    //remember to reduce complexity
     public void UpdateState()
     {
         cellsToCheck.Clear();
@@ -47,6 +46,9 @@ public class Generator
             }
         }
 
+        HashSet<(int x, int y)> toAdd = new HashSet<(int x, int y)>();
+        HashSet<(int x, int y)> toRemove = new HashSet<(int x, int y)>();
+
         foreach (var (x, y) in cellsToCheck)
         {
             int neighbours = CountNeighbours(x, y);
@@ -54,20 +56,21 @@ public class Generator
 
             if (!alive && neighbours == 3 && IsInsideBounds(x, y))
             {
-                liveRegistry.aliveCells.Add((x, y));
+                toAdd.Add((x, y));
             }
             else if (alive && (neighbours < 2 || neighbours > 3))
             {
-                liveRegistry.aliveCells.Remove((x, y));
+                toRemove.Add((x, y));
             }
-            else if (x < centre.x - grid.gridWidth / 2 || x > centre.x + grid.gridWidth / 2 || y < centre.y - grid.gridHeight / 2 || y > centre.y + grid.gridHeight / 2)
+            else if (alive && !IsInsideBounds(x, y))
             {
-                liveRegistry.aliveCells.Remove((x, y));
+                toRemove.Add((x, y));
             }
-
-            //cells in stable arrangments remain in aliveCells but do not require additional statements for that.
-
         }
+
+        foreach (var cell in toAdd) liveRegistry.aliveCells.Add(cell);
+        foreach (var cell in toRemove) liveRegistry.aliveCells.Remove(cell);
+
         liveRegistry.population = liveRegistry.aliveCells.Count;
         onGeneration?.Invoke();
     }

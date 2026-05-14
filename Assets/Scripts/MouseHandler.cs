@@ -54,12 +54,7 @@ public class MouseHandler : MonoBehaviour
             gol.mineHider.coverMines(gol.grid);
             score = (0, 0, false, null);
 
-            int i;
-            for (i = 0; i < gol.patternManager.minesPerPattern.Count; i++)
-            {
-                Debug.Log("generation: " + i + " " + gol.patternManager.minesPerPattern[i]);
-            }
-            Debug.Log("aliveCells count: " + gol.liveRegistry.aliveCells.Count);
+
             gol.mineDetector.detectorOverAllCells();
         }
         mode = newMode;

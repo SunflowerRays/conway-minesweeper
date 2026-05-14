@@ -12,7 +12,7 @@ public class GoL : MonoBehaviour
     [SerializeField] public float freqInterval;
     [SerializeField] private int gridWidth;
     [SerializeField] private int gridHeight;
-    [SerializeField] private UnityEngine.UI.Slider generationSlider;
+    [SerializeField] public UnityEngine.UI.Slider generationSlider;
     [SerializeField] private UnityEngine.UI.Button ConfirmButton;
 
     public (int x, int y) centre;
@@ -66,6 +66,8 @@ public class GoL : MonoBehaviour
         liveRegistry.population = liveRegistry.aliveCells.Count;
         generationSlider.minValue = minGenerations;
         generationSlider.maxValue = maxGenerations;
+        textHandler.GeneratorCountText.text = "Pattern Setter";
+
     }
 
 
@@ -79,24 +81,21 @@ public class GoL : MonoBehaviour
     {
         if (mouseHandler.mode == MouseHandler.GameMode.PatternEdit)
         {
+            patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
+            patternManager.minesPerPattern.Add(liveRegistry.population);
+            Debug.Log("Cells in Gen: " + 0 + string.Join(", ", patternManager.patterns[0]));
+
             mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
             StartCoroutine(Simulate());
+            generationSlider.gameObject.SetActive(true);
         }
         else if (mouseHandler.mode == MouseHandler.GameMode.Simulating)
         {
-            int selectedIndex = (int)generationSlider.value - 1;
+            int selectedIndex = (int)generationSlider.value;
+            Debug.Log("Selected Generation is " + selectedIndex);
             liveRegistry.aliveCells = new HashSet<(int x, int y)>(patternManager.patterns[selectedIndex]);
             liveRegistry.population = liveRegistry.aliveCells.Count;
-
-
-            //debugging
-
-            //Debug.Log("Selected index: " + selectedIndex);
-            //Debug.Log("minesPerPattern count: " + patternManager.minesPerPattern.Count);
-            //Debug.Log("patterns count: " + patternManager.patterns.Count);
-            //Debug.Log("Selected mine count: " + patternManager.minesPerPattern[selectedIndex]);
-
-
+            generationSlider.gameObject.SetActive(false);
 
             StopGenerator();
 
@@ -104,6 +103,8 @@ public class GoL : MonoBehaviour
 
             Debug.Log($"Grid: width={grid.gridWidth}, height={grid.gridHeight}, centre={grid.centre.x},{grid.centre.y}");
             Debug.Log($"topCells count: {mineHider.topCells.Count}");
+
+
 
             ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Restart Game";
             ConfirmButton.image.color = new Color(0.29f, 0f, 0.51f);
@@ -123,12 +124,13 @@ public class GoL : MonoBehaviour
             textHandler.highScorePanel.SetActive(false);
             mouseHandler.SetMode(MouseHandler.GameMode.PatternEdit);
             textHandler.currentTime = 0;
+            textHandler.mineCount = 0;
+            generationSlider.gameObject.SetActive(false);
+            textHandler.GeneratorCountText.text = "Pattern Setter";
 
 
-            // Change text
+
             ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Confirm Pattern";
-
-            // Change colour
             ConfirmButton.image.color = Color.white;
 
         }
@@ -155,11 +157,18 @@ public class GoL : MonoBehaviour
         {
             HashSet<(int x, int y)> previousCells = new HashSet<(int x, int y)>(liveRegistry.aliveCells);
             generator.UpdateState();
+
+
             liveRegistry.population = liveRegistry.aliveCells.Count;
             patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
+            Debug.Log("Cells in Gen: " + i + string.Join(", ", patternManager.patterns[i]));
             patternManager.minesPerPattern.Add(liveRegistry.population);
-            if (liveRegistry.aliveCells.Count == 0) break;
-            if (liveRegistry.aliveCells.SetEquals(previousCells)) break;
+            if (liveRegistry.aliveCells.Count == 0 || liveRegistry.aliveCells.SetEquals(previousCells))
+            {
+                generationSlider.maxValue = i;
+                break;
+            }
+
             yield return new WaitForSeconds(freqInterval);
         }
 

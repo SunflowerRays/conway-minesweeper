@@ -9,9 +9,9 @@ public class TextHandler : MonoBehaviour
 {
     [SerializeField] private GoL gol;
     [SerializeField] private TMP_Text timerText;
-    [SerializeField] private TMP_Text mineCountText;
-    [SerializeField] private TMP_Text GeneratorCountText;
-    [SerializeField] private UnityEngine.UI.Slider generationSlider;
+    [SerializeField] public TMP_Text mineCountText;
+    [SerializeField] public TMP_Text GeneratorCountText;
+
     [SerializeField] public TMP_Text highScoreText;
     [SerializeField] public GameObject highScorePanel;
 
@@ -67,12 +67,9 @@ public class TextHandler : MonoBehaviour
         {
             if (isGeneratorFinished)
             {
-                int index = (int)generationSlider.value - 1;
-                if (index >= 0 && index < gol.patternManager.minesPerPattern.Count)
-                {
-                    mineCount = gol.patternManager.minesPerPattern[index];
-                    generationCount = index;
-                }
+                int index = (int)gol.generationSlider.value;
+                generationCount = index;
+                mineCount = gol.patternManager.minesPerPattern[index];
             }
         }
 
