@@ -136,11 +136,16 @@ public class GoL : MonoBehaviour
         //Enable and Disable UI elements
         generationSlider.gameObject.SetActive(false);
 
+        mouseHandler.playerNameInput.gameObject.SetActive(false);
+        mouseHandler.SubmitScore.gameObject.SetActive(false);
+
         //Set local UI values
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Simulate";
         ConfirmButton.image.color = Color.white;
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = Color.darkGoldenRod;
         generationSlider.value = minGenerations;
+
+        
 
         //Call reset method in another class
         textHandler.ResetUI();
@@ -173,7 +178,7 @@ public class GoL : MonoBehaviour
 
             liveRegistry.population = liveRegistry.aliveCells.Count;
             patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
-            Debug.Log("Cells in Gen: " + i + string.Join(", ", patternManager.patterns[i]));
+            //Debug.Log("Cells in Gen: " + i + string.Join(", ", patternManager.patterns[i]));
             patternManager.minesPerPattern.Add(liveRegistry.population);
             if (liveRegistry.aliveCells.Count == 0 || liveRegistry.aliveCells.SetEquals(previousCells))
             {

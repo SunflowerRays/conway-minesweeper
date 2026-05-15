@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
-using static MineDetector;
 
 public class MouseHandler : MonoBehaviour
 {
@@ -15,8 +13,8 @@ public class MouseHandler : MonoBehaviour
     [SerializeField] private Tile explosion;
     [SerializeField] private Tile flag;
     [SerializeField] private Tile greyTile;
-
-
+    [SerializeField] public TMPro.TMP_InputField playerNameInput;
+    [SerializeField] public UnityEngine.UI.Button SubmitScore;
     private Tilemap currentState;
 
     public enum GameMode { PatternEdit, Simulating, Minesweeper, GameOver }
@@ -27,13 +25,16 @@ public class MouseHandler : MonoBehaviour
 
     void Start()
     {
+
+        playerNameInput.gameObject.SetActive(false);
+        playerNameInput.text = "Player";
+        SubmitScore.gameObject.SetActive(false);
+
         currentState = gol.currentState;
 
         gol.mineHider.onWin += () =>
         {
-            //update points when scoring is updated.
-            score.playerName = "Pauline Par Excellence";
-            score.points = 500;
+            score.points = gol.liveRegistry.population;
             score.levelCleared = true;
             mode = GameMode.GameOver;
         };
@@ -179,18 +180,27 @@ public class MouseHandler : MonoBehaviour
         isGameOver = true;
         gol.textHandler.isMinesweeperRunning = false;
         score.time = gol.textHandler.currentTime;
-        if (score.time > 0.00f)
+        greyfield.ClearAllTiles();
+        playerNameInput.gameObject.SetActive(true);
+        SubmitScore.gameObject.SetActive(true);
+    }
+
+
+    public void OnSubmitScorePressed()
+    {
+        score.playerName = playerNameInput.text;
+        ScoreKeeper.LatestScore latestScore = new ScoreKeeper.LatestScore()
         {
-            greyfield.ClearAllTiles();
-            ScoreKeeper.LatestScore latestScore = new ScoreKeeper.LatestScore()
-            {
-                time = score.time,
-                points = score.points,
-                levelCleared = score.levelCleared,
-                playerName = score.playerName
-            };
-            gol.scoreKeeper.saveScore(latestScore);
-        }
+            time = score.time,
+            points = score.points,
+            levelCleared = score.levelCleared,
+            playerName = score.playerName
+        };
+
+        playerNameInput.gameObject.SetActive(false);
+        SubmitScore.gameObject.SetActive(false);
+        Debug.Log("Name confirmed:" + score.playerName);
+        gol.scoreKeeper.saveScore(latestScore);
         gol.textHandler.showHighScores();
     }
 
