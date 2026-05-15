@@ -63,12 +63,9 @@ public class GoL : MonoBehaviour
     /// controls are set to their initial states.</remarks>
     public void Start()
     {
-
-
         liveRegistry.population = liveRegistry.aliveCells.Count;
         generationSlider.minValue = minGenerations;
         generationSlider.maxValue = maxGenerations;
-        //textHandler.GeneratorCountText.text = "Pattern Setter";
         ResetGame();
     }
 
@@ -193,7 +190,7 @@ public class GoL : MonoBehaviour
         ConfirmButton.interactable = true;
 
         //Set local UI values
-        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Start Minesweeper";
+        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Minesweeper";
         ConfirmButton.image.color = Color.green;
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = Color.darkOrange;
 
