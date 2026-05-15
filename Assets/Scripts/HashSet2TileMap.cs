@@ -85,7 +85,15 @@ public class HashSet2TileMap : MonoBehaviour
             }
             else if (CellData.mines > 0)
             {
-                tileMap.SetTile(new Vector3Int(CellData.x, CellData.y, 0), nonMineTiles[CellData.mines]);
+                Vector3Int pos = new Vector3Int(CellData.x, CellData.y, 0);
+                tileMap.SetTile(pos, nonMineTiles[CellData.mines]);
+
+                float hue = (CellData.mines - 1) / 8f;
+                Color tileColour = Color.HSVToRGB(hue, .4f, 1f);
+
+                tileMap.SetTileFlags(pos, TileFlags.None);
+                tileMap.SetColor(pos, tileColour);
+                tileMap.SetTileFlags(pos, TileFlags.LockAll);
             }
             else
             {
