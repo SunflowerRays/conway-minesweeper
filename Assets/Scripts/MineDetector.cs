@@ -38,8 +38,7 @@ public class MineDetector
 
         foreach (var (i, j) in grid.GetAllCells())
         {
-            var (x, y, mines) = detector(i, j);
-            CellData cell = new CellData() { x = x, y = y, mines = mines };
+            CellData cell = detector(i, j);
             cellsData.Add(cell);
         }
 
@@ -57,11 +56,10 @@ public class MineDetector
     /// <param name="i"></param>
     /// <param name="j"></param>
     /// <returns>a tuple with coordinates and an int indicating the presence or absence of a mine(s)</returns>
-    public (int x, int y, int mines) detector(int i, int j)
+    public CellData detector(int i, int j)
     {
-
+        CellData cell;
         int mines = 0;
-
         if (liveRegistry.aliveCells.Contains((i, j)))
         {
             mines = -1;
@@ -79,10 +77,8 @@ public class MineDetector
                     }
                 }
             }
-
         }
-        return (i, j, mines);
+        cell = new CellData() { x = i, y = j, mines = mines };
+        return cell;
     }
-
-
 }

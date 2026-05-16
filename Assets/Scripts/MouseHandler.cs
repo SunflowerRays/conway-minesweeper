@@ -54,7 +54,6 @@ public class MouseHandler : MonoBehaviour
             gol.patternManager.ClearPattern();
             CascadeRevealSwitch.gameObject.SetActive(false);
         }
-
         if (newMode == GameMode.Minesweeper)
         {
             gol.mineHider.coverMines(gol.grid);
@@ -158,7 +157,7 @@ public class MouseHandler : MonoBehaviour
                 {
                     //position taken from queued values
                     var (bx, by) = cellsToCheck.Dequeue();
-                    var (_, _, mines) = gol.mineDetector.detector(bx, by);
+                    int mines = gol.mineDetector.detector(bx, by).mines;
                     // mines == -1, the tile is mined.
                     if (mines == -1)
                     {

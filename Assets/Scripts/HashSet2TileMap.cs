@@ -17,8 +17,6 @@ public class HashSet2TileMap : MonoBehaviour
     [SerializeField] private Tilemap greyfield;
     [SerializeField] private Tilemap currentState;
 
-
-
     /// <summary>
     /// Runs when the program starts.
     /// Sets up event listeners.
@@ -98,8 +96,6 @@ public class HashSet2TileMap : MonoBehaviour
         }
     }
 
-
-
     /// <summary>
     /// Removes all tiles from the specified tilemap.
     /// </summary>
@@ -108,7 +104,6 @@ public class HashSet2TileMap : MonoBehaviour
     {
         tileMap.ClearAllTiles();
     }
-
 
     /// <summary>
     /// Removes all mines from the minefield, resetting it to an empty state.

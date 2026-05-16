@@ -176,17 +176,11 @@ public class GoL : MonoBehaviour
     /// <returns>An enumerator that advances the simulation through each generation, yielding control between steps.</returns>
     private IEnumerator Simulate()
     {
-
-
         isGeneratorRunning = true;
-
         ConfirmButton.interactable = false;
-
-
         for (int i = minGenerations; i <= maxGenerations; i++)
         {
             HashSet<(int x, int y)> previousCells = new HashSet<(int x, int y)>(liveRegistry.aliveCells);
-
             if (DemoSwitch.isOn)
             {
             generator.UpdateState(true);
@@ -196,7 +190,6 @@ public class GoL : MonoBehaviour
             {
                 generator.UpdateState(false);
             }
-
             liveRegistry.population = liveRegistry.aliveCells.Count;
             patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
             patternManager.minesPerPattern.Add(liveRegistry.population);
@@ -205,21 +198,17 @@ public class GoL : MonoBehaviour
                 generationSlider.maxValue = i;
                 break;
             }
-
         }
-
         //Enable UI elements
         generationSlider.gameObject.SetActive(true);
         textHandler.GeneratorCountText.gameObject.SetActive(true);
         ConfirmButton.interactable = true;
-
         //Set local UI values
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Minesweeper";
         ConfirmButton.image.color = Color.green;
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(1f, 0.55f, 0f);
-
+        
         isGeneratorRunning = false;
-
     }
 
 

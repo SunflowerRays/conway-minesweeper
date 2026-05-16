@@ -8,8 +8,7 @@ using System.Collections.Generic;
 public class LiveRegistry
 {
     public HashSet<(int x, int y)> aliveCells { get; set; }
-    // Suggestion Moore Neighbourhood HashSet for evaluation by both minesweeper and GoL.
-    // *Moore Neighbourhood of each alive cell.
+    // HashSet for evaluation by both minesweeper and GoL.
     public int population { get; set; }
     public LiveRegistry()
     {
