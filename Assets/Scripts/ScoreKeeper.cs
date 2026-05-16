@@ -10,11 +10,14 @@ public class ScoreKeeper
 
 
 
-    public ScoreKeeper(string dataPath)
+    public ScoreKeeper(string dataPath, string fileName = "high_scores.json")
     {
-        path = Path.Combine(dataPath, "high_scores.json");
+        path = Path.Combine(dataPath, fileName);
     }
 
+    /// <summary>
+    /// A struct containing all the score data from an attempt in minesweeper.
+    /// </summary>
     public struct LatestScore
     {
         public float time;
@@ -23,6 +26,11 @@ public class ScoreKeeper
         public string playerName;
     }
 
+    /// <summary>
+    /// Saves the players score to the high_scores file.
+    /// 
+    /// </summary>
+    /// <param name="score"></param>
     public void saveScore(LatestScore score)
     {
         string json = JsonConvert.SerializeObject(score);

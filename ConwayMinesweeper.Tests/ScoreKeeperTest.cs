@@ -8,18 +8,20 @@ namespace ConwayMinesweeper.Tests
     {
         private ScoreKeeper scoreKeeper;
         private string testPath;
+        private string testFile;
 
         [SetUp]
         public void Init()
         {
             testPath = Path.GetTempPath();
-            scoreKeeper = new ScoreKeeper(testPath);
+            testFile = "high_scores_test.json";
+            scoreKeeper = new ScoreKeeper(testPath, testFile);
         }
 
         [TearDown]
         public void Cleanup()
         {
-            string filePath = Path.Combine(testPath, "high_scores.json");
+            string filePath = Path.Combine(testPath, testFile);
             if (File.Exists(filePath))
                 File.Delete(filePath);
         }
@@ -35,7 +37,7 @@ namespace ConwayMinesweeper.Tests
                 playerName = "Test"
             });
 
-            Assert.That(File.Exists(Path.Combine(testPath, "high_scores.json")), Is.True);
+            Assert.That(File.Exists(Path.Combine(testPath, testFile)), Is.True);
         }
 
         [Test]

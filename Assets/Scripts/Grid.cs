@@ -1,14 +1,10 @@
 using System.Collections.Generic;
-
 public class Grid
 {
 
     public int gridHeight { get; private set; }
     public int gridWidth { get; private set; }
     public (int x, int y) centre { get; private set; }
-
-
-
 
     /// <summary>
     /// Initializes a new instance of the Grid class with the specified center position, height, and width.
@@ -18,13 +14,9 @@ public class Grid
     /// <param name="gridWidth">The number of columns in the grid. Must be a positive integer.</param>
     public Grid((int x, int y) centre, int gridWidth, int gridHeight)
     {
-        //Consider Arithmetic Overflow Check Operators    
-
         this.centre = centre;
         this.gridHeight = gridHeight;
         this.gridWidth = gridWidth;
-
-
     }
 
     /// <summary>
@@ -45,6 +37,23 @@ public class Grid
             }
         }
     }
+
+    /// <summary>
+    /// Evaluates whether coordinates are inside the grid.
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns>boolean</returns>
+    public bool IsInsideBounds(int x, int y)
+    {
+        if (x < centre.x - gridWidth / 2 ||
+            x >= centre.x + gridWidth / 2 ||
+            y < centre.y - gridHeight / 2 ||
+            y >= centre.y + gridHeight / 2) return false;
+
+        return true;
+    }
+
 
 
 }

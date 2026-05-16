@@ -4,6 +4,11 @@ public class MineDetector
 {
     private Grid grid;
     private LiveRegistry liveRegistry;
+
+    /// <summary>
+    /// Public struct that contains the number of mines in a cell, and 
+    /// The cell's coordinates.
+    /// </summary>
     public struct CellData
     {
         public int x;
@@ -14,7 +19,7 @@ public class MineDetector
     public List<CellData> cellsData;
 
     //To keep this class a pure C# class with no Unity elements, so it remains testable
-    public event Action onDetectionComplete;
+    public event Action onDetectionComplete = delegate { };
 
     public MineDetector(Grid grid, LiveRegistry liveRegistry)
     {
@@ -23,7 +28,9 @@ public class MineDetector
         cellsData = new List<CellData>();
     }
 
-
+    /// <summary>
+    /// Runs the detector method over all of the cells in the grid.
+    /// </summary>
     public void detectorOverAllCells()
     {
 
@@ -36,12 +43,20 @@ public class MineDetector
             cellsData.Add(cell);
         }
 
-        onDetectionComplete?.Invoke();
+        onDetectionComplete.Invoke();
 
 
     }
 
-
+    /// <summary>
+    /// Evaluates the cell at coordinates (i,j) for
+    /// The presence of a mines,
+    /// And if there is no mine on the tile,
+    /// Then for the presence of mines around the tile.
+    /// </summary>
+    /// <param name="i"></param>
+    /// <param name="j"></param>
+    /// <returns>a tuple with coordinates and an int indicating the presence or absence of a mine(s)</returns>
     public (int x, int y, int mines) detector(int i, int j)
     {
 

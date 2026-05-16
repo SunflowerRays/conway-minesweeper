@@ -1,5 +1,10 @@
 using System.Collections.Generic;
 
+/// <summary>
+/// Data container class that records the positions of all living cells
+/// As well as the population
+/// At a given point in time.
+/// </summary>
 public class LiveRegistry
 {
     public HashSet<(int x, int y)> aliveCells { get; set; }

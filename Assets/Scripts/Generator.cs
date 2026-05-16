@@ -7,20 +7,18 @@ public class Generator
 
     private LiveRegistry liveRegistry;
 
+    
     private HashSet<(int x, int y)> cellsToCheck;
-    private (int x, int y) centre;
 
     private Grid grid;
+    //Event that can be invoked by UpdateState method.
+    //Includes empty delegate so the value of the event cannot be null.
+    public event Action OnGeneration = delegate { };
 
-    public event Action onGeneration;
-
-    public Generator(Grid grid, LiveRegistry liveRegistry, (int x, int y) centre)
+    public Generator(Grid grid, LiveRegistry liveRegistry)
     {
-        //required
         this.grid = grid;
         this.liveRegistry = liveRegistry;
-        this.centre = centre;
-
 
         cellsToCheck = new HashSet<(int x, int y)>();
 
@@ -31,7 +29,20 @@ public class Generator
         return liveRegistry.aliveCells.Contains((x, y));
     }
 
-    public void UpdateState()
+
+    /// <summary>
+    /// Applies the rules of Conway's Game of Life (GoL) to create a new pattern.
+    /// *The pattern can be thought of as like a new generation of individual organisms.
+    /// 
+    /// The LiveRegistry is updated with the new pattern, by
+    /// Adding each new living cell, and
+    /// Removing each dead cell.
+    /// 
+    /// The population in LiveRegistry is also updated to match the new pattern.
+    /// 
+    /// </summary>
+    /// <param name="demoMode"></param>
+    public void UpdateState(bool demoMode = false)
     {
         cellsToCheck.Clear();
 
@@ -54,7 +65,7 @@ public class Generator
             int neighbours = CountNeighbours(x, y);
             bool alive = IsAlive(x, y);
 
-            if (!alive && neighbours == 3 && IsInsideBounds(x, y))
+            if (!alive && neighbours == 3 && grid.IsInsideBounds(x, y))
             {
                 toAdd.Add((x, y));
             }
@@ -62,7 +73,7 @@ public class Generator
             {
                 toRemove.Add((x, y));
             }
-            else if (alive && !IsInsideBounds(x, y))
+            else if (alive && !grid.IsInsideBounds(x, y))
             {
                 toRemove.Add((x, y));
             }
@@ -72,22 +83,20 @@ public class Generator
         foreach (var cell in toRemove) liveRegistry.aliveCells.Remove(cell);
 
         liveRegistry.population = liveRegistry.aliveCells.Count;
-        onGeneration?.Invoke();
+
+        if (demoMode)
+        {
+            OnGeneration.Invoke();
+        }
+        
     }
 
-
-
-    private bool IsInsideBounds(int x, int y)
-    {
-        if (x < grid.centre.x - grid.gridWidth / 2 ||
-            x >= grid.centre.x + grid.gridWidth / 2 ||
-            y < grid.centre.y - grid.gridHeight / 2 ||
-            y >= grid.centre.y + grid.gridHeight / 2) return false;
-
-        return true;
-    }
-
-
+    /// <summary>
+    /// Finds the number of living neighbours of the cell at the coordinates (x,y).
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <returns>Returns the number of living neighbours of the cell at the given coordinates.</returns>
     private int CountNeighbours(int x, int y)
     {
         int count = 0;

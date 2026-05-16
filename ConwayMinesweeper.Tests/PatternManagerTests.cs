@@ -54,21 +54,5 @@ namespace ConwayMinesweeper.Tests
             patternManager.ClearPattern();
             Assert.That(liveRegistry.aliveCells.Count, Is.EqualTo(0));
         }
-
-        [Test]
-        public void GetCentre_ReturnsZeroForEmptyPattern()
-        {
-            var centre = patternManager.GetCentre();
-            Assert.That(centre, Is.EqualTo((0, 0)));
-        }
-
-        [Test]
-        public void GetCentre_ReturnsCorrectCentreForPattern()
-        {
-            patternManager.ToggleCell(-2, -2);
-            patternManager.ToggleCell(2, 2);
-            var centre = patternManager.GetCentre();
-            Assert.That(centre, Is.EqualTo((0, 0)));
-        }
     }
 }

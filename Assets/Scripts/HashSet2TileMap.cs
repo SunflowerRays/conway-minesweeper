@@ -1,38 +1,32 @@
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
-using System.Runtime.InteropServices;
-
-#if UNITY_EDITOR
-// editor-only code here
-
-using TreeEditor;
-using UnityEditor.EditorTools;
-#endif
-
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-
-
 public class HashSet2TileMap : MonoBehaviour
 {
-
+    //Gol class
+    [SerializeField] private GoL gol;
+    //Set local UI values
+    //Tiles
     [SerializeField] private Tile aliveTile;
     [SerializeField] private Tile bomb;
-    [SerializeField] private Tile explosion;
     [SerializeField] private Tile[] nonMineTiles;
     [SerializeField] private Tile greyTile;
-    [SerializeField] private GoL gol;
+    //Tilesmaps
     [SerializeField] private Tilemap minefield;
     [SerializeField] private Tilemap greyfield;
     [SerializeField] private Tilemap currentState;
 
 
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    /// <summary>
+    /// Runs when the program starts.
+    /// Sets up event listeners.
+    /// </summary>
     void Start()
     {
-        gol.generator.onGeneration += () => mapper(gol.liveRegistry.aliveCells, currentState);
+        //Event Listeners
+        gol.generator.OnGeneration += () => mapper(gol.liveRegistry.aliveCells, currentState);
         gol.mineDetector.onDetectionComplete += () => mapper(gol.mineDetector.cellsData, minefield);
         gol.mineHider.onCoverageComplete += () => mapper(gol.mineHider.topCells, greyfield);
     }
@@ -88,6 +82,8 @@ public class HashSet2TileMap : MonoBehaviour
                 Vector3Int pos = new Vector3Int(CellData.x, CellData.y, 0);
                 tileMap.SetTile(pos, nonMineTiles[CellData.mines]);
 
+                //Automatically adds a hue to each number tile
+                //Based on the number of mines.
                 float hue = (CellData.mines - 1) / 8f;
                 Color tileColour = Color.HSVToRGB(hue, .4f, 1f);
 
@@ -128,41 +124,6 @@ public class HashSet2TileMap : MonoBehaviour
     public void clearGreyfield()
     {
         clear(greyfield);
-    }
-
-
-    /// <summary>
-    /// Retrieves the coordinates of all non-empty tiles in the specified tilemap.
-    /// </summary>
-    /// <remarks>The returned set contains only the coordinates of tiles that have a tile assigned in the
-    /// provided tilemap. Positions with no tile are excluded.</remarks>
-    /// <param name="tileMap">The tilemap to search for non-empty tiles. Cannot be null.</param>
-    /// <returns>A set of (x, y) coordinate pairs representing the positions of all tiles in the tilemap that are not empty. The
-    /// set is empty if no non-empty tiles are found.</returns>
-    public HashSet<(int x, int y)> readTileMap(Tilemap tileMap)
-    {
-        HashSet<(int x, int y)> temp = new HashSet<(int x, int y)>();
-
-        foreach (var position in tileMap.cellBounds.allPositionsWithin)
-        {
-            if (tileMap.GetTile(position) != null)
-            {
-                temp.Add((position.x, position.y));
-            }
-        }
-
-        return temp;
-    }
-
-    /// <summary>
-    /// Gets the width and height of the specified tilemap in cells.
-    /// </summary>
-    /// <param name="tileMap">The tilemap from which to retrieve the dimensions. Cannot be null.</param>
-    /// <returns>A tuple containing the width and height, in cells, of the tilemap.</returns>
-    public (int width, int height) getTilemapDimensions(Tilemap tileMap)
-    {
-        BoundsInt bounds = tileMap.cellBounds;
-        return (bounds.size.x, bounds.size.y);
     }
 
 }

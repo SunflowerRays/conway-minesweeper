@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
 
 public class GoL : MonoBehaviour
 {
+    //Local UI elements
     [SerializeField] public Tilemap currentState;
     [SerializeField] public Tile aliveTile;
     [SerializeField] public float freqInterval;
@@ -14,7 +14,14 @@ public class GoL : MonoBehaviour
     [SerializeField] private int gridHeight;
     [SerializeField] public UnityEngine.UI.Slider generationSlider;
     [SerializeField] private UnityEngine.UI.Button ConfirmButton;
+    [SerializeField] public UnityEngine.UI.Toggle DemoSwitch;
 
+    //Other Monobehaviour Classes
+    [SerializeField] public HashSet2TileMap HashSet2TileMap;
+    [SerializeField] public MouseHandler mouseHandler;
+    [SerializeField] public TextHandler textHandler;
+
+    //Games state
     public (int x, int y) centre;
     public Grid grid;
     public LiveRegistry liveRegistry;
@@ -24,9 +31,7 @@ public class GoL : MonoBehaviour
     public PatternManager patternManager;
     public ScoreKeeper scoreKeeper;
     public bool isGeneratorRunning;
-    [SerializeField] public HashSet2TileMap HashSet2TileMap;
-    [SerializeField] public MouseHandler mouseHandler;
-    [SerializeField] public TextHandler textHandler;
+
 
     // Score Display Settings
     [SerializeField] public int numberOfHighScores;
@@ -49,8 +54,8 @@ public class GoL : MonoBehaviour
         patternManager = new PatternManager(liveRegistry);
         grid = new Grid(centre, gridWidth, gridHeight);
         mineDetector = new MineDetector(grid, liveRegistry);
-        mineHider = new MineHider(grid, liveRegistry);
-        generator = new Generator(grid, liveRegistry, centre);
+        mineHider = new MineHider(liveRegistry);
+        generator = new Generator(grid, liveRegistry);
         scoreKeeper = new ScoreKeeper(Application.persistentDataPath);
     }
 
@@ -80,6 +85,9 @@ public class GoL : MonoBehaviour
     {
         if (mouseHandler.mode == MouseHandler.GameMode.PatternEdit)
         {
+            //Disable UI elements
+            DemoSwitch.gameObject.SetActive(false);
+
             //Store initial pattern
             patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
             patternManager.minesPerPattern.Add(liveRegistry.population);
@@ -109,8 +117,8 @@ public class GoL : MonoBehaviour
 
             //Set local UI values
             ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Restart Game";
-            ConfirmButton.image.color = Color.gold;
-            ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = Color.firebrick;
+            ConfirmButton.image.color = new Color(1f, 0.84f, 0f);
+            ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(0.7f, 0.13f, 0.13f);
 
         }
         else if (mouseHandler.mode == MouseHandler.GameMode.GameOver || mouseHandler.mode == MouseHandler.GameMode.Minesweeper)
@@ -120,7 +128,12 @@ public class GoL : MonoBehaviour
 
         }
     }
-
+    /// <summary>
+    /// Resets the game by 
+    /// Updating the game state, enabling, disabling and updating the values of UI elements, as well as
+    /// Calling a complementary ResetUI method in textHandler, and
+    /// Setting the game mode to PatternEdit.
+    /// </summary>
     private void ResetGame()
     {
         //Games state
@@ -132,19 +145,19 @@ public class GoL : MonoBehaviour
         currentState.ClearAllTiles();
         HashSet2TileMap.clearMinefield();
         HashSet2TileMap.clearGreyfield();
-        
-        //Enable and Disable UI elements
-        generationSlider.gameObject.SetActive(false);
 
+        //Enable and Disable UI elements
+        DemoSwitch.gameObject.SetActive(true);
+        generationSlider.gameObject.SetActive(false);
         mouseHandler.playerNameInput.gameObject.SetActive(false);
         mouseHandler.SubmitScore.gameObject.SetActive(false);
 
         //Set local UI values
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Simulate";
         ConfirmButton.image.color = Color.white;
-        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = Color.darkGoldenRod;
+        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(0.72f, 0.53f, 0.04f);
         generationSlider.value = minGenerations;
-
+        DemoSwitch.isOn = false;
         
 
         //Call reset method in another class
@@ -173,12 +186,19 @@ public class GoL : MonoBehaviour
         for (int i = minGenerations; i <= maxGenerations; i++)
         {
             HashSet<(int x, int y)> previousCells = new HashSet<(int x, int y)>(liveRegistry.aliveCells);
-            generator.UpdateState();
 
+            if (DemoSwitch.isOn)
+            {
+            generator.UpdateState(true);
+            yield return new WaitForSeconds(freqInterval);
+            } 
+            else
+            {
+                generator.UpdateState(false);
+            }
 
             liveRegistry.population = liveRegistry.aliveCells.Count;
             patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
-            //Debug.Log("Cells in Gen: " + i + string.Join(", ", patternManager.patterns[i]));
             patternManager.minesPerPattern.Add(liveRegistry.population);
             if (liveRegistry.aliveCells.Count == 0 || liveRegistry.aliveCells.SetEquals(previousCells))
             {
@@ -186,7 +206,6 @@ public class GoL : MonoBehaviour
                 break;
             }
 
-            yield return new WaitForSeconds(freqInterval);
         }
 
         //Enable UI elements
@@ -197,7 +216,7 @@ public class GoL : MonoBehaviour
         //Set local UI values
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Minesweeper";
         ConfirmButton.image.color = Color.green;
-        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = Color.darkOrange;
+        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(1f, 0.55f, 0f);
 
         isGeneratorRunning = false;
 
