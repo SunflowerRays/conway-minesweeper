@@ -2,14 +2,21 @@ using UnityEngine;
 
 public class GridBackgroundManager : MonoBehaviour
 {
+    // GoL class
     [SerializeField] private GoL gol;
+    // Sprite Renderer used to set the background with
+    // A material and a shader graph.
     [SerializeField] private SpriteRenderer background;
+    [SerializeField] private float verticalOffset = 0f;
+    [SerializeField] private float horizontalOffset = 0f;
 
+    /// <summary>
+    /// Runs when the program starts.
+    /// Camera is centred on the grid
+    /// </summary>
     void Start()
     {
-        float width = gol.grid.gridWidth;
-        float height = gol.grid.gridHeight;
-        background.transform.localPosition = new Vector3(0, 0, 0);
-        background.transform.localScale = new Vector3(width, height, 1);
+        Camera.main.transform.position = new Vector3(-0.5f + horizontalOffset, -0.5f + verticalOffset, Camera.main.transform.position.z);
+        Camera.main.orthographicSize = gol.grid.gridHeight / 2f + 1f;
     }
 }

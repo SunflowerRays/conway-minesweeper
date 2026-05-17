@@ -1,23 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-
 
 public class MineHider
 {
 
-    private Grid grid;
+
     private LiveRegistry liveRegistry;
     public HashSet<(int x, int y)> topCells { get; set; }
 
     //To keep this class a pure C# class with no Unity elements, so it remains testable
-    public event Action onCoverageComplete;
-    public event Action onGameStart;
-    public event Action onWin;
-    public MineHider(Grid grid, LiveRegistry liveRegistry)
+    public event Action onCoverageComplete = delegate { };
+    public event Action onGameStart = delegate { };
+    public event Action onWin = delegate { };
+    public MineHider(LiveRegistry liveRegistry)
     {
         topCells = new HashSet<(int x, int y)>();
-        this.grid = grid;
         this.liveRegistry = liveRegistry;
 
     }
@@ -37,8 +34,8 @@ public class MineHider
             topCells.Add((i, j));
         }
 
-        onCoverageComplete?.Invoke();
-        onGameStart?.Invoke();
+        onCoverageComplete.Invoke();
+        onGameStart.Invoke();
     }
 
     /// <summary>
@@ -49,13 +46,13 @@ public class MineHider
     /// <param name="x">The zero-based horizontal coordinate of the cell to reveal.</param>
     /// <param name="y">The zero-based vertical coordinate of the cell to reveal.</param>
     /// <returns>true if the cell was successfully revealed; otherwise, false.</returns>
-    public Boolean reveal(int x, int y)
+    public bool reveal(int x, int y)
     {
         if (topCells.Remove((x, y)))
         {
             if (topCells.Count == liveRegistry.aliveCells.Count)
             {
-                onWin?.Invoke();
+                onWin.Invoke();
             }
             return true;
         }

@@ -1,20 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
 
 
 public class GoL : MonoBehaviour
 {
+    //Local UI elements
     [SerializeField] public Tilemap currentState;
     [SerializeField] public Tile aliveTile;
     [SerializeField] public float freqInterval;
     [SerializeField] private int gridWidth;
     [SerializeField] private int gridHeight;
-    [SerializeField] private UnityEngine.UI.Slider generationSlider;
+    [SerializeField] public UnityEngine.UI.Slider generationSlider;
     [SerializeField] private UnityEngine.UI.Button ConfirmButton;
+    [SerializeField] public UnityEngine.UI.Toggle DemoSwitch;
 
+    //Other Monobehaviour Classes
+    [SerializeField] public HashSet2TileMap HashSet2TileMap;
+    [SerializeField] public MouseHandler mouseHandler;
+    [SerializeField] public TextHandler textHandler;
+
+    //Games state
     public (int x, int y) centre;
     public Grid grid;
     public LiveRegistry liveRegistry;
@@ -24,9 +31,7 @@ public class GoL : MonoBehaviour
     public PatternManager patternManager;
     public ScoreKeeper scoreKeeper;
     public bool isGeneratorRunning;
-    [SerializeField] public HashSet2TileMap HashSet2TileMap;
-    [SerializeField] public MouseHandler mouseHandler;
-    [SerializeField] public TextHandler textHandler;
+
 
     // Score Display Settings
     [SerializeField] public int numberOfHighScores;
@@ -49,8 +54,8 @@ public class GoL : MonoBehaviour
         patternManager = new PatternManager(liveRegistry);
         grid = new Grid(centre, gridWidth, gridHeight);
         mineDetector = new MineDetector(grid, liveRegistry);
-        mineHider = new MineHider(grid, liveRegistry);
-        generator = new Generator(grid, liveRegistry, centre);
+        mineHider = new MineHider(liveRegistry);
+        generator = new Generator(grid, liveRegistry);
         scoreKeeper = new ScoreKeeper(Application.persistentDataPath);
     }
 
@@ -66,6 +71,7 @@ public class GoL : MonoBehaviour
         liveRegistry.population = liveRegistry.aliveCells.Count;
         generationSlider.minValue = minGenerations;
         generationSlider.maxValue = maxGenerations;
+        ResetGame();
     }
 
 
@@ -79,61 +85,87 @@ public class GoL : MonoBehaviour
     {
         if (mouseHandler.mode == MouseHandler.GameMode.PatternEdit)
         {
+            //Disable UI elements
+            DemoSwitch.gameObject.SetActive(false);
+
+            //Store initial pattern
+            patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
+            patternManager.minesPerPattern.Add(liveRegistry.population);
+
+            //Set game mode
             mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
+
+            //Start GoL generator
             StartCoroutine(Simulate());
+
         }
         else if (mouseHandler.mode == MouseHandler.GameMode.Simulating)
         {
-            int selectedIndex = (int)generationSlider.value - 1;
+            //Enable and Disable UI elements
+            generationSlider.gameObject.SetActive(false);
+            textHandler.timerText.gameObject.SetActive(true);
+
+            //Index chosen generation
+            int selectedIndex = (int)generationSlider.value;
             liveRegistry.aliveCells = new HashSet<(int x, int y)>(patternManager.patterns[selectedIndex]);
             liveRegistry.population = liveRegistry.aliveCells.Count;
 
-
-            //debugging
-
-            //Debug.Log("Selected index: " + selectedIndex);
-            //Debug.Log("minesPerPattern count: " + patternManager.minesPerPattern.Count);
-            //Debug.Log("patterns count: " + patternManager.patterns.Count);
-            //Debug.Log("Selected mine count: " + patternManager.minesPerPattern[selectedIndex]);
-
-
-
-            StopGenerator();
-
+            //Set game mode
             mouseHandler.SetMode(MouseHandler.GameMode.Minesweeper);
 
-            Debug.Log($"Grid: width={grid.gridWidth}, height={grid.gridHeight}, centre={grid.centre.x},{grid.centre.y}");
-            Debug.Log($"topCells count: {mineHider.topCells.Count}");
 
+
+            //Set local UI values
             ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Restart Game";
-            ConfirmButton.image.color = new Color(0.29f, 0f, 0.51f);
+            ConfirmButton.image.color = new Color(1f, 0.84f, 0f);
+            ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(0.7f, 0.13f, 0.13f);
+
         }
         else if (mouseHandler.mode == MouseHandler.GameMode.GameOver || mouseHandler.mode == MouseHandler.GameMode.Minesweeper)
         {
 
-            mouseHandler.isGameOver = false;
-            liveRegistry.aliveCells.Clear();
-            liveRegistry.population = 0;
-            patternManager.patterns.Clear();
-            patternManager.minesPerPattern.Clear();
-            currentState.ClearAllTiles();
-            HashSet2TileMap.clearMinefield();
-            HashSet2TileMap.clearGreyfield();
-            ConfirmButton.interactable = true;
-            textHandler.highScorePanel.SetActive(false);
-            mouseHandler.SetMode(MouseHandler.GameMode.PatternEdit);
-            textHandler.currentTime = 0;
-
-
-            // Change text
-            ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Confirm Pattern";
-
-            // Change colour
-            ConfirmButton.image.color = Color.white;
+            ResetGame();
 
         }
     }
+    /// <summary>
+    /// Resets the game by 
+    /// Updating the game state, enabling, disabling and updating the values of UI elements, as well as
+    /// Calling a complementary ResetUI method in textHandler, and
+    /// Setting the game mode to PatternEdit.
+    /// </summary>
+    private void ResetGame()
+    {
+        //Games state
+        mouseHandler.isGameOver = false;
+        liveRegistry.aliveCells.Clear();
+        liveRegistry.population = 0;
+        patternManager.patterns.Clear();
+        patternManager.minesPerPattern.Clear();
+        currentState.ClearAllTiles();
+        HashSet2TileMap.clearMinefield();
+        HashSet2TileMap.clearGreyfield();
 
+        //Enable and Disable UI elements
+        DemoSwitch.gameObject.SetActive(true);
+        generationSlider.gameObject.SetActive(false);
+        mouseHandler.playerNameInput.gameObject.SetActive(false);
+        mouseHandler.SubmitScore.gameObject.SetActive(false);
+
+        //Set local UI values
+        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Simulate";
+        ConfirmButton.image.color = Color.white;
+        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(0.72f, 0.53f, 0.04f);
+        generationSlider.value = minGenerations;
+        DemoSwitch.isOn = false;
+
+
+        //Call reset method in another class
+        textHandler.ResetUI();
+
+        //Set game mode
+        mouseHandler.SetMode(MouseHandler.GameMode.PatternEdit);
+    }
 
     /// <summary>
     /// Runs the simulation of cell generations, updating the state and UI as the simulation progresses.
@@ -144,47 +176,42 @@ public class GoL : MonoBehaviour
     /// <returns>An enumerator that advances the simulation through each generation, yielding control between steps.</returns>
     private IEnumerator Simulate()
     {
-
-
         isGeneratorRunning = true;
-
         ConfirmButton.interactable = false;
-
-
         for (int i = minGenerations; i <= maxGenerations; i++)
         {
             HashSet<(int x, int y)> previousCells = new HashSet<(int x, int y)>(liveRegistry.aliveCells);
-            generator.UpdateState();
+            if (DemoSwitch.isOn)
+            {
+                generator.UpdateState(true);
+                textHandler.mineCount = liveRegistry.population;
+                yield return new WaitForSeconds(freqInterval);
+            }
+            else
+            {
+                generator.UpdateState(false);
+            }
             liveRegistry.population = liveRegistry.aliveCells.Count;
             patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
             patternManager.minesPerPattern.Add(liveRegistry.population);
-            if (liveRegistry.aliveCells.Count == 0) break;
-            if (liveRegistry.aliveCells.SetEquals(previousCells)) break;
-            yield return new WaitForSeconds(freqInterval);
+            if (liveRegistry.aliveCells.Count == 0 || liveRegistry.aliveCells.SetEquals(previousCells))
+            {
+                generationSlider.maxValue = i - 1;
+                break;
+            }
         }
-
-
+        //Enable UI elements
+        generationSlider.gameObject.SetActive(true);
+        textHandler.GeneratorCountText.gameObject.SetActive(true);
         ConfirmButton.interactable = true;
-
-        // Change text
-        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Start Minesweeper";
-
-        // Change colour
+        //Set local UI values
+        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Minesweeper";
         ConfirmButton.image.color = Color.green;
+        ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(1f, 0.55f, 0f);
 
-        textHandler.isGeneratorFinished = true;
-
-    }
-
-    /// <summary>
-    /// Stops the generator if it is currently running.
-    /// </summary>
-    /// <remarks>Call this method to halt generator operations. After calling this method, the generator will
-    /// no longer produce output until restarted.</remarks>
-    public void StopGenerator()
-    {
         isGeneratorRunning = false;
     }
+
 
     /// <summary>
     /// Called when the component becomes disabled or inactive.
