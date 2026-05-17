@@ -37,6 +37,15 @@ public class ScoreKeeper
         File.AppendAllText(path, json + "\n");
     }
 
+    /// <summary>
+    /// Loads and returns the specified number of highest scores from the score file, ordered by time in ascending
+    /// order.
+    /// </summary>
+    /// <remarks>If the requested number of high scores exceeds the number of available scores, all available
+    /// scores are returned. The method reads scores from a file and deserializes them from JSON format.</remarks>
+    /// <param name="numberOfHighScores">The maximum number of high scores to return. Must be greater than or equal to zero.</param>
+    /// <returns>An array of the highest scores, ordered by time. Returns an empty array if the score file does not exist or
+    /// contains no scores.</returns>
     public LatestScore[] loadScores(int numberOfHighScores)
     {
         if (!File.Exists(path)) return new LatestScore[0];
@@ -51,6 +60,11 @@ public class ScoreKeeper
         return scores[0..numberOfHighScores];
     }
 
+    /// <summary>
+    /// Deletes all stored score data by removing the underlying file, if it exists.
+    /// </summary>
+    /// <remarks>Use this method to reset or clear all previously saved scores. If the score file does not
+    /// exist, the method performs no action. This operation cannot be undone.</remarks>
     public void clearScores()
     {
         if (File.Exists(path))
