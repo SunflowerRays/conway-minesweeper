@@ -8,6 +8,7 @@ public class GridBackgroundManager : MonoBehaviour
     // A material and a shader graph.
     [SerializeField] private SpriteRenderer background;
     [SerializeField] private float verticalOffset = 0f;
+    [SerializeField] private float horizontalOffset = 0f;
 
     /// <summary>
     /// Runs when the program starts.
@@ -15,7 +16,7 @@ public class GridBackgroundManager : MonoBehaviour
     /// </summary>
     void Start()
     {
-        Camera.main.transform.position = new Vector3(-0.5f, -0.5f + verticalOffset, Camera.main.transform.position.z);
+        Camera.main.transform.position = new Vector3(-0.5f + horizontalOffset, -0.5f + verticalOffset, Camera.main.transform.position.z);
         Camera.main.orthographicSize = gol.grid.gridHeight / 2f + 1f;
     }
 }

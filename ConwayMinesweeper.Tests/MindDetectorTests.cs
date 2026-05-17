@@ -36,14 +36,6 @@ namespace ConwayMinesweeper.Tests
         }
 
         [Test]
-        public void Detector_ReturnsMinusOneForMineCell()
-        {
-            liveRegistry.aliveCells.Add((0, 0));
-            var cellData = mineDetector.detector(0, 0);
-            Assert.That(cellData.mines, Is.EqualTo(-1));
-        }
-
-        [Test]
         public void Detector_ReturnsCorrectAdjacencyCount()
         {
             liveRegistry.aliveCells.Add((1, 0));

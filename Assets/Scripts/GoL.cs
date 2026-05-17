@@ -91,13 +91,13 @@ public class GoL : MonoBehaviour
             //Store initial pattern
             patternManager.patterns.Add(new HashSet<(int x, int y)>(liveRegistry.aliveCells));
             patternManager.minesPerPattern.Add(liveRegistry.population);
-            
+
             //Set game mode
             mouseHandler.SetMode(MouseHandler.GameMode.Simulating);
-            
+
             //Start GoL generator
             StartCoroutine(Simulate());
-            
+
         }
         else if (mouseHandler.mode == MouseHandler.GameMode.Simulating)
         {
@@ -158,7 +158,7 @@ public class GoL : MonoBehaviour
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(0.72f, 0.53f, 0.04f);
         generationSlider.value = minGenerations;
         DemoSwitch.isOn = false;
-        
+
 
         //Call reset method in another class
         textHandler.ResetUI();
@@ -183,9 +183,10 @@ public class GoL : MonoBehaviour
             HashSet<(int x, int y)> previousCells = new HashSet<(int x, int y)>(liveRegistry.aliveCells);
             if (DemoSwitch.isOn)
             {
-            generator.UpdateState(true);
-            yield return new WaitForSeconds(freqInterval);
-            } 
+                generator.UpdateState(true);
+                textHandler.mineCount = liveRegistry.population;
+                yield return new WaitForSeconds(freqInterval);
+            }
             else
             {
                 generator.UpdateState(false);
@@ -195,7 +196,7 @@ public class GoL : MonoBehaviour
             patternManager.minesPerPattern.Add(liveRegistry.population);
             if (liveRegistry.aliveCells.Count == 0 || liveRegistry.aliveCells.SetEquals(previousCells))
             {
-                generationSlider.maxValue = i;
+                generationSlider.maxValue = i - 1;
                 break;
             }
         }
@@ -207,7 +208,7 @@ public class GoL : MonoBehaviour
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().text = "Minesweeper";
         ConfirmButton.image.color = Color.green;
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(1f, 0.55f, 0f);
-        
+
         isGeneratorRunning = false;
     }
 

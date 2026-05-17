@@ -84,7 +84,7 @@ public class TextHandler : MonoBehaviour
         if (!isMinesweeperRunning)
         {
             if (!gol.isGeneratorRunning && gol.patternManager.minesPerPattern.Count > 0)
-            {   
+            {
                 int index = (int)gol.generationSlider.value;
                 if (index >= 0 && index < gol.patternManager.minesPerPattern.Count)
                 {

@@ -7,7 +7,7 @@ public class Generator
 
     private LiveRegistry liveRegistry;
 
-    
+
     private HashSet<(int x, int y)> cellsToCheck;
 
     private Grid grid;
@@ -88,7 +88,7 @@ public class Generator
         {
             OnGeneration.Invoke();
         }
-        
+
     }
 
     /// <summary>
