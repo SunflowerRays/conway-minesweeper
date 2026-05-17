@@ -15,7 +15,7 @@ namespace ConwayMinesweeper.Tests
         {
             liveRegistry = new LiveRegistry();
             grid = new Grid((0, 0), 16, 12);
-            mineHider = new MineHider(grid, liveRegistry);
+            mineHider = new MineHider(liveRegistry);
         }
 
         [Test]

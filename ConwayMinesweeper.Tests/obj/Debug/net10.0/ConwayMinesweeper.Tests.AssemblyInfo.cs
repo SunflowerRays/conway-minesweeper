@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ConwayMinesweeper.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a4e6c9a002d38b3acde4954576de3b1502caf31a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+05e776484a9f25ededbdef5913c07a3ff0429d0e")]
 [assembly: System.Reflection.AssemblyProductAttribute("ConwayMinesweeper.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ConwayMinesweeper.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

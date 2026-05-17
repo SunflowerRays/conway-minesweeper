@@ -18,7 +18,7 @@ namespace ConwayMinesweeper.Tests
         {
             liveRegistry = new LiveRegistry();
             grid = new Grid((0, 0), 12, 12);
-            generator = new Generator(grid, liveRegistry, (0, 0));
+            generator = new Generator(grid, liveRegistry);
         }
 
         [Test]
