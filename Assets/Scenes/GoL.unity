@@ -2837,7 +2837,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GoL
   currentState: {fileID: 1950171668}
   aliveTile: {fileID: 11400000, guid: ea98815d4ff048c438fb54d478279eb5, type: 2}
-  freqInterval: 3
+  freqInterval: 0.4
   gridWidth: 16
   gridHeight: 12
   generationSlider: {fileID: 1428412051}

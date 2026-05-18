@@ -222,7 +222,7 @@ public class MouseHandler : MonoBehaviour
         gol.textHandler.isMinesweeperRunning = false;
         score.time = gol.textHandler.currentTime;
         greyfield.ClearAllTiles();
-        if (score.levelCleared)
+        if (score.levelCleared && !gol.DemoSwitch.isOn)
         {
             playerNameInput.gameObject.SetActive(true);
             SubmitScore.gameObject.SetActive(true);
@@ -231,7 +231,6 @@ public class MouseHandler : MonoBehaviour
         {
             gol.textHandler.showHighScores();
         }
-
 
     }
 
@@ -258,10 +257,8 @@ public class MouseHandler : MonoBehaviour
         playerNameInput.gameObject.SetActive(false);
         SubmitScore.gameObject.SetActive(false);
 
-        if (!gol.DemoSwitch.isOn)
-        {
-            gol.scoreKeeper.saveScore(latestScore);
-        }
+        gol.scoreKeeper.saveScore(latestScore);
+
 
         gol.textHandler.showHighScores();
     }
