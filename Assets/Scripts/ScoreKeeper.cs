@@ -29,7 +29,7 @@ public class ScoreKeeper
     /// <summary>
     /// Saves the players score to the high_scores file.
     /// 
-    /// </summary>
+    /// </summary>d
     /// <param name="score"></param>
     public void saveScore(LatestScore score)
     {
