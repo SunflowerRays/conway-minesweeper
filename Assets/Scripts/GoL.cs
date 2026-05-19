@@ -157,6 +157,7 @@ public class GoL : MonoBehaviour
         ConfirmButton.image.color = Color.white;
         ConfirmButton.GetComponentInChildren<TMPro.TMP_Text>().color = new Color(0.72f, 0.53f, 0.04f);
         generationSlider.value = minGenerations;
+        generationSlider.maxValue = maxGenerations;
         DemoSwitch.isOn = false;
 
 
