@@ -16,3 +16,4 @@ Prompt Examples:
 5.	How do I combine multiple segments in Panopto?
 6.	What would be a conventional academic way to say 'during standard flow'?
 7.	Can you make a Harvard compliant parenthetical citation for Hossain, F., Shamsujjoha, M. and Ali, M.N.Y., 2016, November. Biological and combinatorial problems exploration using parallel and evolutionary computing. In 2016 14th International Conference on ICT and Knowledge Engineering (ICT&KE) (pp. 31-37). IEEE.
+ 
